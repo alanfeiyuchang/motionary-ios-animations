@@ -222,3 +222,145 @@ extension BackgroundMath {
         return (CGPoint(x: value.x + v.dx * dt, y: value.y + v.dy * dt), v)
     }
 }
+
+// MARK: - Part B helpers
+
+/// An sRGB triple for per-frame colour maths inside Canvas painters (mixing, ramps, shading).
+struct BackgroundRGB {
+    var r: Double
+    var g: Double
+    var b: Double
+
+    init(_ r: Double, _ g: Double, _ b: Double) {
+        self.r = r
+        self.g = g
+        self.b = b
+    }
+
+    init(hex: UInt32) {
+        r = Double((hex >> 16) & 0xFF) / 255
+        g = Double((hex >> 8) & 0xFF) / 255
+        b = Double(hex & 0xFF) / 255
+    }
+
+    func mix(_ other: BackgroundRGB, _ t: Double) -> BackgroundRGB {
+        let u = min(max(t, 0), 1)
+        return BackgroundRGB(r + (other.r - r) * u, g + (other.g - g) * u, b + (other.b - b) * u)
+    }
+
+    /// Multiplies the brightness (shading a face of a solid, darkening a reflection).
+    func scaled(_ k: Double) -> BackgroundRGB {
+        BackgroundRGB(min(r * k, 1), min(g * k, 1), min(b * k, 1))
+    }
+
+    func color(_ opacity: Double = 1) -> Color {
+        Color(.sRGB, red: r, green: g, blue: b, opacity: opacity)
+    }
+
+    /// Piecewise-linear ramp through `stops` for `t` in 0...1.
+    static func ramp(_ stops: [BackgroundRGB], _ t: Double) -> BackgroundRGB {
+        guard let first = stops.first else { return BackgroundRGB(0, 0, 0) }
+        guard stops.count > 1 else { return first }
+        let x = min(max(t, 0), 1) * Double(stops.count - 1)
+        let i = min(Int(x), stops.count - 2)
+        return stops[i].mix(stops[i + 1], x - Double(i))
+    }
+}
+
+extension BackgroundMath {
+    /// Integer lattice hash in 0..<1.
+    static func hash(_ x: Int, _ y: Int) -> Double {
+        var h = UInt32(truncatingIfNeeded: x &* 374_761_393 &+ y &* 668_265_263)
+        h = (h ^ (h >> 13)) &* 1_274_126_177
+        h ^= h >> 16
+        return Double(h & 0xFFFFFF) / Double(0x1000000)
+    }
+
+    /// Smooth 2D value noise in 0...1 (bilinear blend of lattice hashes with a smoothstep fade).
+    static func valueNoise(_ x: Double, _ y: Double) -> Double {
+        let xf = x.rounded(.down)
+        let yf = y.rounded(.down)
+        let fx = x - xf
+        let fy = y - yf
+        let u = fx * fx * (3 - 2 * fx)
+        let v = fy * fy * (3 - 2 * fy)
+        let ix = Int(xf)
+        let iy = Int(yf)
+        let a = hash(ix, iy)
+        let b = hash(ix + 1, iy)
+        let c = hash(ix, iy + 1)
+        let d = hash(ix + 1, iy + 1)
+        return (a + (b - a) * u) * (1 - v) + (c + (d - c) * u) * v
+    }
+}
+
+extension GraphicsContext {
+    /// A soft radial glow (colour → transparent), optionally flattened vertically.
+    func backgroundsGlow(at centre: CGPoint, radius: CGFloat, color: Color, squash: CGFloat = 1) {
+        guard radius > 0 else { return }
+        var copy = self
+        copy.translateBy(x: centre.x, y: centre.y)
+        copy.scaleBy(x: 1, y: squash)
+        copy.fill(
+            Path(ellipseIn: CGRect(x: -radius, y: -radius, width: radius * 2, height: radius * 2)),
+            with: .radialGradient(Gradient(colors: [color, color.opacity(0)]), center: .zero, startRadius: 0, endRadius: radius)
+        )
+    }
+}
+
+/// A point that follows the finger on a spring and wanders along an idle path when nothing touches the
+/// stage, so a touch-driven background keeps demonstrating its response in previews through the same code.
+final class BackgroundPointer {
+    var touch: CGPoint?
+    var userTouched = false
+    private(set) var point = CGPoint(x: 170, y: 170)
+    private(set) var velocity = CGVector.zero
+    /// Eased 0 (idle) → 1 (finger down).
+    private(set) var presence: Double = 0
+    private var last: Double?
+    private var seeded = false
+
+    @discardableResult
+    func step(now: Double, idle: CGPoint, stiffness: CGFloat = 60, damping: CGFloat = 0.6, frozen: Bool = false) -> CGPoint {
+        if frozen {
+            point = idle
+            return point
+        }
+        let target = touch ?? idle
+        if !seeded {
+            seeded = true
+            point = target
+        }
+        var dt = 1.0 / 60.0
+        if let last = last { dt = min(max(now - last, 0), 1.0 / 30.0) }
+        last = now
+        (point, velocity) = BackgroundMath.spring(
+            value: point, velocity: velocity, target: target, stiffness: stiffness, damping: damping, dt: CGFloat(dt)
+        )
+        presence += ((touch == nil ? 0 : 1) - presence) * (1 - exp(-dt * 6))
+        return point
+    }
+
+    /// Idle strength blended up to 1 while a finger is down.
+    func strength(idle: Double) -> Double {
+        idle + (1 - idle) * presence
+    }
+}
+
+extension View {
+    /// Dark ink on a frosted chip, for the bright backgrounds. Hidden in previews.
+    func backgroundsLightChipHint(_ text: LocalizedText, _ ctx: DemoContext) -> some View {
+        overlay(alignment: .bottom) {
+            if !ctx.isPreview {
+                Text(text, ctx.language)
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(Color(hex: 0x1E2440).opacity(0.85))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(.white.opacity(0.6), in: Capsule())
+                    .padding(.bottom, 12)
+                    .allowsHitTesting(false)
+            }
+        }
+    }
+}
