@@ -11,7 +11,7 @@ private struct RefreshVarItem {
 
 private enum RefreshVarData {
     static let items: [RefreshVarItem] = [
-        RefreshVarItem(symbol: "airplane", tint: Palette.sky, title: L("Flight UA 88 on time", "UA 88 航班准点"), detail: L("Gate B12 · boarding 9:40", "B12 登机口 · 9:40 登机")),
+        RefreshVarItem(symbol: "airplane", tint: Palette.sky, title: L("Flight MN 88 on time", "MN 88 航班准点"), detail: L("Gate B12 · boarding 9:40", "B12 登机口 · 9:40 登机")),
         RefreshVarItem(symbol: "cart.fill", tint: Palette.coral, title: L("Order shipped", "订单已发货"), detail: L("Arrives Thursday", "预计周四送达")),
         RefreshVarItem(symbol: "heart.fill", tint: Palette.pink, title: L("Mia liked your photo", "米娅赞了你的照片"), detail: L("2 min ago", "2 分钟前")),
         RefreshVarItem(symbol: "creditcard.fill", tint: Palette.mint, title: L("Refund received", "退款已到账"), detail: L("$42.00 to card •• 4242", "¥298.00 至尾号 4242")),

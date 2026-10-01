@@ -5,10 +5,10 @@ import { Palette, spring, useClock, type DemoContext } from "../../kit";
 import { DividerRow, RefreshHost, type IndicatorProps } from "./refresh-host";
 
 const ITEMS: { Icon: LucideIcon; fill: boolean; tint: string; title: [string, string]; detail: [string, string] }[] = [
-  { Icon: Plane, fill: true, tint: Palette.sky, title: ["Flight UA 88 on time", "UA 88 航班准点"], detail: ["Gate B12 · boarding 9:40", "B12 登机口 · 9:40 登机"] },
+  { Icon: Plane, fill: true, tint: Palette.sky, title: ["Flight MN 88 on time", "MN 88 航班准点"], detail: ["Gate B12 · boarding 9:40", "B12 登机口 · 9:40 登机"] },
   { Icon: ShoppingCart, fill: true, tint: Palette.coral, title: ["Order shipped", "订单已发货"], detail: ["Arrives Thursday", "预计周四送达"] },
   { Icon: Heart, fill: true, tint: Palette.pink, title: ["Mia liked your photo", "米娅赞了你的照片"], detail: ["2 min ago", "2 分钟前"] },
-  { Icon: CreditCard, fill: false, tint: Palette.mint, title: ["Refund received", "退款已到账"], detail: ["$42.00 to Visa", "¥298.00 至 Visa"] },
+  { Icon: CreditCard, fill: false, tint: Palette.mint, title: ["Refund received", "退款已到账"], detail: ["$42.00 to card •• 4242", "¥298.00 至尾号 4242"] },
   { Icon: Calendar, fill: false, tint: Palette.violet, title: ["Design review moved", "设计评审已改期"], detail: ["Friday · 3:00 pm", "周五 · 下午 3:00"] },
   { Icon: Sun, fill: true, tint: Palette.amber, title: ["Clear skies today", "今日晴朗"], detail: ["High 24° · Low 15°", "最高 24° · 最低 15°"] },
 ];
