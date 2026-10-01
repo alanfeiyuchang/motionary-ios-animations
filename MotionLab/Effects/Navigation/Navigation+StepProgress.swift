@@ -195,7 +195,7 @@ private struct StepPage: View {
     private static let details: [LocalizedText] = [
         L("2 items · $64.00", "2 件商品 · ¥468"),
         L("Home · 88 Bund Rd", "家 · 外滩路 88 号"),
-        L("Visa •••• 4242", "Visa •••• 4242"),
+        L("Nova •••• 4242", "Nova •••• 4242"),
         L("Order confirmed", "订单已确认"),
     ]
 
