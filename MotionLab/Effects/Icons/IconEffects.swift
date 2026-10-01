@@ -32,5 +32,19 @@ enum IconEffects {
         .iconsBatteryCharge,
         // Action variations
         .iconsBookmarkSave,
+        .iconsStarBurst,
+        .iconsPinDrop,
+        .iconsMicRecord,
+        .iconsArchiveBox,
+        .iconsRefreshSpin,
+        // Glyph morph, round 2
+        .iconsSunMoon,
+        .iconsEyeBlink,
+        .iconsMuteSlash,
+        // Status, round 2
+        .iconsCloudSync,
+        .iconsFaceIDScan,
+        // Ambient, round 2
+        .iconsLiveWaveform,
     ]
 }
