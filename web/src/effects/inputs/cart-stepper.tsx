@@ -1,9 +1,9 @@
 /** inputs.cart-stepper (Inputs+CartStepper.swift) */
 import { motion } from "motion/react";
 import { useRef, useState } from "react";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { CakeSlice, Minus, Plus, Trash2 } from "lucide-react";
 import { DemoHint, NumericText, Palette, alpha, clamp, demoCard, fonts, spring, textStyle, useAutoplay, useElapsed, useHaptics, type DemoProps } from "../../kit";
-import { CupSaucer, SymbolSwap } from "./_a-common";
+import { SymbolSwap } from "./_a-common";
 import { PRIMARY_STRONG } from "./_b-common";
 import { BOUNCY, SNAPPY, column, spacer, springTrack, useLive } from "./_c-common";
 
@@ -77,11 +77,11 @@ export default function CartStepper({ ctx }: DemoProps) {
       <div style={spacer} />
       {/* Product row */}
       <div style={{ ...demoCard(24), width: 304, padding: 12, display: "flex", alignItems: "center", gap: 12, flexShrink: 0, boxShadow: `inset 0 0 0 1px ${Palette.stroke}, 0 10px 27px rgb(0 0 0 / 0.12)` }}>
-        <div style={{ width: 52, height: 52, borderRadius: 16, background: "linear-gradient(135deg, #F3C892, #C98A4B)", display: "grid", placeItems: "center", color: "#fff", flexShrink: 0 }}>
-          <CupSaucer size={30} />
+        <div style={{ width: 52, height: 52, borderRadius: 16, background: "linear-gradient(135deg, #B7E3A0, #5FA86B)", display: "grid", placeItems: "center", color: "#fff", flexShrink: 0 }}>
+          <CakeSlice size={28} strokeWidth={2} />
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 3, minWidth: 0 }}>
-          <span style={{ ...textStyle.subheadline, fontWeight: 600, whiteSpace: "nowrap" }}>{ctx.t("Oat Latte", "燕麦拿铁")}</span>
+          <span style={{ ...textStyle.subheadline, fontWeight: 600, whiteSpace: "nowrap" }}>{ctx.t("Matcha Roll", "抹茶蛋糕卷")}</span>
           <span style={{ ...textStyle.footnote, fontWeight: 500, fontVariantNumeric: "tabular-nums", color: Palette.secondaryLabel, whiteSpace: "nowrap" }}>{money(UNIT_PRICE)}</span>
         </div>
         <div style={{ flex: 1 }} />

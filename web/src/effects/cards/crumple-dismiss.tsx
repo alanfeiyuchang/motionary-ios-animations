@@ -187,7 +187,7 @@ export default function CrumpleDismiss({ ctx }: DemoProps) {
           <div style={{ position: "absolute", left: 4, top: 5, width: 52, height: 66, transformOrigin: "50% 100%", transform: `scale(${2 - squash}, ${squash})` }}>
             <motion.div
               initial={false}
-              animate={{ rotate: lidOpen ? -62 : 0 }}
+              animate={{ rotate: lidOpen ? 62 : 0 }}
               transition={lidOpen ? spring(0.3, 0.62) : spring(0.22, 0.6)}
               style={{ position: "absolute", left: 0, top: 0, width: 52, height: 12, transformOrigin: "100% 100%" }}
             >

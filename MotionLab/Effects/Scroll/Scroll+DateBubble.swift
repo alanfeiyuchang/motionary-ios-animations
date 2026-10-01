@@ -187,7 +187,6 @@ private struct ScrollDateBubbleDemo: View {
                 .offset(y: thumbY + (thumbHeight - 34) / 2 - 10 * stretch * squash)
         }
         .frame(maxHeight: .infinity, alignment: .top)
-        .animation(.spring(response: 0.25, dampingFraction: 0.7), value: scrubbing)
         .overlay(alignment: .trailing) {
             // The strip that claims vertical drags from the grid and from the page.
             Color.clear

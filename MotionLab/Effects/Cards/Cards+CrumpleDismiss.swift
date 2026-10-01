@@ -406,7 +406,7 @@ private struct CardsCrumpleBin: View {
     var body: some View {
         VStack(spacing: 2) {
             lid
-                .rotationEffect(.degrees(lidOpen ? -62 : 0), anchor: .bottomTrailing)
+                .rotationEffect(.degrees(lidOpen ? 62 : 0), anchor: .bottomTrailing)
             can
         }
         .keyframeAnimator(initialValue: Bump(), trigger: hits) { content, bump in

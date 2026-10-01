@@ -69,15 +69,15 @@ private struct InputCartStepperDemo: View {
     private var product: some View {
         HStack(spacing: 12) {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(LinearGradient(colors: [Color(hex: 0xF3C892), Color(hex: 0xC98A4B)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .fill(LinearGradient(colors: [Color(hex: 0xB7E3A0), Color(hex: 0x5FA86B)], startPoint: .topLeading, endPoint: .bottomTrailing))
                 .frame(width: 52, height: 52)
                 .overlay(
-                    Image(systemName: "cup.and.saucer.fill")
+                    Image(systemName: "birthday.cake.fill")
                         .font(.system(size: 24))
                         .foregroundStyle(Color.white)
                 )
             VStack(alignment: .leading, spacing: 3) {
-                Text(L("Oat Latte", "燕麦拿铁"), ctx.language)
+                Text(L("Matcha Roll", "抹茶蛋糕卷"), ctx.language)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.primary)
                     .lineLimit(1)
