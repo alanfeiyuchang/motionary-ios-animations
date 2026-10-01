@@ -56,6 +56,18 @@ enum MorphMath {
     }
 }
 
+extension View {
+    /// Frames a demo "screen" and clips it to the shared continuous shape with a hairline and a soft drop shadow.
+    func morphScreen(width: CGFloat = 316, height: CGFloat = 306, radius: CGFloat = 30) -> some View {
+        let shape = RoundedRectangle(cornerRadius: radius, style: .continuous)
+        return self
+            .frame(width: width, height: height)
+            .clipShape(shape)
+            .overlay(shape.strokeBorder(Palette.stroke))
+            .shadow(color: .black.opacity(0.12), radius: 18, y: 10)
+    }
+}
+
 /// Secondary content that rises out of a blur a moment after it is inserted (settled at once in a still).
 struct MorphReveal: ViewModifier {
     var delay: Double = 0

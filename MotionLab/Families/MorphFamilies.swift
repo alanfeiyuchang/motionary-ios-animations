@@ -54,6 +54,9 @@ enum MorphFamilies {
         "morph.notification-expand": "morph.container",
         "morph.avatar-profile": "morph.container",
         "morph.date-cell-expand": "morph.container",
+        "morph.chip-filter-panel": "morph.container",
+        "morph.fab-compose": "morph.container",
+        "morph.bubble-context": "morph.container",
         // Hero & zoom
         "morph.hero-card": "morph.hero",
         "morph.native-zoom": "morph.hero",
@@ -63,6 +66,8 @@ enum MorphFamilies {
         "morph.app-launch": "morph.hero",
         "morph.story-open": "morph.hero",
         "morph.pin-to-card": "morph.hero",
+        "morph.fly-to-cart": "morph.hero",
+        "morph.thumb-to-player": "morph.hero",
         // Shape morph
         "morph.shape-morph": "morph.shape",
         "morph.liquid-glass": "morph.shape",
@@ -71,6 +76,9 @@ enum MorphFamilies {
         "morph.line-to-ring": "morph.shape",
         "morph.digit-morph": "morph.shape",
         "morph.blob-cycle": "morph.shape",
+        "morph.icon-morph-set": "morph.shape",
+        "morph.particles-assemble": "morph.shape",
+        "morph.wave-circle": "morph.shape",
         // Reveal & replace
         "morph.circular-reveal": "morph.reveal",
         "morph.blur-replace": "morph.reveal",
@@ -79,6 +87,9 @@ enum MorphFamilies {
         "morph.tile-mosaic": "morph.reveal",
         "morph.page-curl": "morph.reveal",
         "morph.shutter-iris": "morph.reveal",
+        "morph.portal-zoom": "morph.reveal",
+        "morph.split-doors": "morph.reveal",
+        "morph.drip-reveal": "morph.reveal",
         // Layout transitions
         "morph.staggered-transition": "morph.layout",
         "morph.list-grid": "morph.layout",
@@ -86,5 +97,8 @@ enum MorphFamilies {
         "morph.grid-to-ring": "morph.layout",
         "morph.sort-hop": "morph.layout",
         "morph.calendar-week-month": "morph.layout",
+        "morph.filter-reflow": "morph.layout",
+        "morph.avatar-stack-expand": "morph.layout",
+        "morph.masonry-shuffle": "morph.layout",
     ]
 }
