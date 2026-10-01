@@ -37,5 +37,17 @@ enum TextEffects {
         .textNewsTicker,
         .textWordDrum,
         .textTypeCycle,
+        // Round 2
+        .textPriceTick,
+        .textCountdown,
+        .textAIStream,
+        .textHandwriting,
+        .textLiquidFill,
+        .textPathFlow,
+        .textMagnetLetters,
+        .textLetterMorph,
+        .textGradientFlow,
+        .textSquiggleUnderline,
+        .textSpotlightMask,
     ]
 }
