@@ -74,6 +74,8 @@ enum InputsFamilies {
         "inputs.rocker-switch": "inputs.toggle",
         "inputs.pull-cord-toggle": "inputs.toggle",
         "inputs.flood-toggle": "inputs.toggle",
+        "inputs.glass-toggle": "inputs.toggle",
+        "inputs.lever-toggle": "inputs.toggle",
         // Slider
         "inputs.velocity-slider": "inputs.slider",
         "inputs.elastic-slider": "inputs.slider",
@@ -83,30 +85,38 @@ enum InputsFamilies {
         "inputs.drum-slider": "inputs.slider",
         "inputs.segmented-slider": "inputs.slider",
         "inputs.grow-scrubber": "inputs.slider",
+        "inputs.volume-pill": "inputs.slider",
+        "inputs.hue-slider": "inputs.slider",
         // Dials & wheels
         "inputs.dial-knob": "inputs.dial",
         "inputs.wheel-picker": "inputs.dial",
         "inputs.jog-wheel": "inputs.dial",
         "inputs.thermostat-dial": "inputs.dial",
         "inputs.wind-up-timer": "inputs.dial",
+        "inputs.clock-picker": "inputs.dial",
+        "inputs.safe-dial": "inputs.dial",
         // Text field
         "inputs.floating-label": "inputs.text-field",
         "inputs.password-strength": "inputs.text-field",
         "inputs.expanding-search": "inputs.text-field",
         "inputs.char-drop-field": "inputs.text-field",
         "inputs.token-field": "inputs.text-field",
+        "inputs.card-input": "inputs.text-field",
+        "inputs.ai-composer": "inputs.text-field",
         // Code & passcode
         "inputs.otp-code": "inputs.code-entry",
         "inputs.passcode-pad": "inputs.code-entry",
         "inputs.merge-pin": "inputs.code-entry",
         "inputs.slot-reel-code": "inputs.code-entry",
         "inputs.secure-flip-code": "inputs.code-entry",
+        "inputs.pattern-lock": "inputs.code-entry",
         // Stepper
         "inputs.rolling-stepper": "inputs.stepper",
         "inputs.expanding-stepper": "inputs.stepper",
         "inputs.accelerating-stepper": "inputs.stepper",
         "inputs.drag-stepper": "inputs.stepper",
         "inputs.delta-stepper": "inputs.stepper",
+        "inputs.gooey-stepper": "inputs.stepper",
         // Rating
         "inputs.star-rating": "inputs.rating",
         "inputs.emoji-face-rating": "inputs.rating",
@@ -119,5 +129,6 @@ enum InputsFamilies {
         "inputs.swatch-picker": "inputs.selection",
         "inputs.radio-travel": "inputs.selection",
         "inputs.todo-check": "inputs.selection",
+        "inputs.dropdown-roll": "inputs.selection",
     ]
 }

@@ -47,5 +47,16 @@ enum InputEffects {
         .inputsJogWheel,
         .inputsThermostatDial,
         .inputsWindUpTimer,
+        .inputsGlassToggle,
+        .inputsLeverToggle,
+        .inputsVolumePill,
+        .inputsHueSlider,
+        .inputsClockPicker,
+        .inputsSafeDial,
+        .inputsPatternLock,
+        .inputsCardInput,
+        .inputsAIComposer,
+        .inputsGooeyStepper,
+        .inputsDropdownRoll,
     ]
 }
