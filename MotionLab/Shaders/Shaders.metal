@@ -790,3 +790,757 @@ half4 mlTunnel(float2 position, half4 color, float2 size, float time, float2 cen
     col = clamp(col, float3(0.0), float3(1.0));
     return half4(half3(col), 1.0h) * color.a;
 }
+
+// =====================================================================================================
+// MARK: - Second batch
+// Portability notes for the GLSL ES 1.0 port: every function below is self-contained (it only uses
+// mlHash / mlNoise / mlFbm / mlLuma and mlRot / mlHashStable / mlGradNoise / mlCloud below, plus the small
+// static helpers declared right above it), loops
+// have constant bounds, there are no integer bit operations, arrays, derivatives or out-parameters, and
+// `fmod` is only applied to non-negative values (GLSL `mod`). `layer.sample(p)` is
+// `texture2D(layer, p / size)` and returns premultiplied colour, as does every returned value.
+// =====================================================================================================
+
+static float2 mlRot(float2 p, float a) {
+    float c = cos(a);
+    float s = sin(a);
+    return float2(c * p.x - s * p.y, s * p.x + c * p.y);
+}
+
+// A hash without sin(): fract(sin(x) · 43758) amplifies a one-ulp difference in x into a different value, and
+// with fast-math the same lattice corner can be reached through differently rounded expressions from the
+// two cells that share it, which shows as faint seams. This one only multiplies and adds small numbers.
+static float mlHashStable(float2 p) {
+    float3 q = fract(float3(p.x, p.y, p.x) * 0.1031);
+    q += dot(q, float3(q.y, q.z, q.x) + 33.33);
+    return fract((q.x + q.y) * q.z);
+}
+
+// Gradient (Perlin-style) noise in 0…1 with a quintic fade: no lattice-aligned blocks, which value noise
+// shows as soon as it is thresholded (clouds, stains, mirror reflections).
+static float mlGradNoise(float2 p) {
+    float2 i = floor(p);
+    float2 f = fract(p);
+    float2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
+    float a0 = mlHashStable(i) * 6.2831853;
+    float a1 = mlHashStable(i + float2(1.0, 0.0)) * 6.2831853;
+    float a2 = mlHashStable(i + float2(0.0, 1.0)) * 6.2831853;
+    float a3 = mlHashStable(i + float2(1.0, 1.0)) * 6.2831853;
+    float n0 = dot(float2(cos(a0), sin(a0)), f);
+    float n1 = dot(float2(cos(a1), sin(a1)), f - float2(1.0, 0.0));
+    float n2 = dot(float2(cos(a2), sin(a2)), f - float2(0.0, 1.0));
+    float n3 = dot(float2(cos(a3), sin(a3)), f - float2(1.0, 1.0));
+    return clamp(0.5 + 0.75 * mix(mix(n0, n1, u.x), mix(n2, n3, u.x), u.y), 0.0, 1.0);
+}
+
+// Five octaves of gradient noise, each rotated by 0.6 rad so the octaves never line up. The sum hugs 0.5, so
+// its contrast is raised 1.7× to span roughly 0…1 (it is not clamped, so there are no flat plateaus).
+static float mlCloud(float2 p) {
+    float value = 0.0;
+    float amplitude = 0.5;
+    for (int k = 0; k < 5; k++) {
+        value += amplitude * mlGradNoise(p);
+        p = mlRot(p, 0.6) * 2.03 + 11.3;
+        amplitude *= 0.5;
+    }
+    return (value / 0.97 - 0.5) * 1.7 + 0.5;
+}
+
+// MARK: - Heat haze (layer effect)
+// Rising hot air over the content. Two fbm fields, stretched vertically and scrolling upward, displace the
+// sample (mostly sideways). The amount is `pow(y / height, falloff)` (strongest at the bottom) plus a plume
+// above `source`: a Gaussian column that widens and fades as it rises.
+//   size       layer size in points
+//   time       seconds (already speed-scaled)
+//   strength   peak displacement in points
+//   scale      turbulence cell size in points
+//   falloff    exponent of the bottom-to-top ramp (higher keeps the haze near the ground)
+//   source     position of the extra heat source (the finger)
+//   sourceGain 0…1 strength of that plume
+// Samples move at most strength × 2.5 and are clamped to the layer.
+
+[[ stitchable ]]
+half4 mlHeatHaze(float2 position, SwiftUI::Layer layer, float2 size, float time, float strength,
+                 float scale, float falloff, float2 source, float sourceGain) {
+    float sc = max(scale, 4.0);
+    float h = clamp(position.y / max(size.y, 1.0), 0.0, 1.0);
+    float ground = pow(h, max(falloff, 0.1));
+    float above = source.y - position.y;
+    float width = 30.0 + max(above, 0.0) * 0.24;
+    float dx = (position.x - source.x) / width;
+    float plume = sourceGain * exp(-dx * dx) * smoothstep(-26.0, 10.0, above) * exp(-max(above, 0.0) / 170.0);
+    float amount = min(ground + plume * 1.5, 2.5);
+    float2 q = float2(position.x / sc, position.y / (sc * 1.9) + time * 1.3);
+    float n1 = mlFbm(q);
+    float n2 = mlFbm(q * 1.9 + float2(17.3, time * 0.9));
+    float2 offset = float2(n1 - 0.5, (n2 - 0.5) * 0.45) * 2.0 * strength * amount;
+    float2 lo = float2(0.5);
+    float2 hi = size - 0.5;
+    half4 a = layer.sample(clamp(position + offset, lo, hi));
+    half4 b = layer.sample(clamp(position + offset * 0.35, lo, hi));
+    half4 c = mix(a, b, half(0.3 * min(amount, 1.0)));
+    // Hot air washes the picture out a little and lifts it toward a warm white.
+    float wash = min(plume * 0.16 + ground * 0.05, 0.3);
+    c.rgb = mix(c.rgb, half3(1.0h, 0.93h, 0.82h) * c.a, half(wash));
+    return c;
+}
+
+// MARK: - Shockwave (layer effect)
+// Up to three expanding refractive rings. Each ring is a one-cycle wavelet around its front (radius =
+// age × speed): content just ahead of the front is pushed outward and content behind it is pulled, so the
+// band reads as a moving lens. R and B are displaced slightly more / less than G for a chromatic fringe,
+// and the crest carries a thin highlight. A ring fades out as its front approaches `reach`.
+//   size            layer size in points
+//   o1…o3 / t1…t3   origin and age in seconds of each ring (age < 0 = unused)
+//   speed           front speed in pt/s
+//   width           half-width of the band in points
+//   strength        peak displacement in points
+//   fringe          chromatic split, as a fraction of the displacement
+//   reach           radius at which a ring has fully faded
+// Samples move at most 3 × strength × (1 + fringe) and are clamped to the layer.
+
+static float3 mlShockRing(float2 position, float2 origin, float age, float speed, float width,
+                          float strength, float reach) {
+    if (age < 0.0) {
+        return float3(0.0);
+    }
+    float2 d = position - origin;
+    float dist = length(d);
+    float2 dir = dist > 0.001 ? d / dist : float2(0.0);
+    float front = age * speed;
+    float w = max(width, 1.0);
+    float x = (dist - front) / w;
+    float life = (1.0 - smoothstep(reach * 0.45, reach, front)) * smoothstep(0.0, w * 0.5, front);
+    // x·e^(−1.6x²) peaks at 0.339, so 2.95 normalizes the wavelet to ±1.
+    float push = -x * exp(-x * x * 1.6) * 2.95 * strength * life;
+    float crest = exp(-x * x * 14.0) * life;
+    return float3(dir * push, crest);
+}
+
+[[ stitchable ]]
+half4 mlShockwave(float2 position, SwiftUI::Layer layer, float2 size, float2 o1, float t1, float2 o2, float t2,
+                  float2 o3, float t3, float speed, float width, float strength, float fringe, float reach) {
+    float3 w = mlShockRing(position, o1, t1, speed, width, strength, reach)
+             + mlShockRing(position, o2, t2, speed, width, strength, reach)
+             + mlShockRing(position, o3, t3, speed, width, strength, reach);
+    float2 lo = float2(0.5);
+    float2 hi = size - 0.5;
+    half4 g = layer.sample(clamp(position + w.xy, lo, hi));
+    half4 r = layer.sample(clamp(position + w.xy * (1.0 + fringe), lo, hi));
+    half4 b = layer.sample(clamp(position + w.xy * (1.0 - fringe), lo, hi));
+    half4 c = half4(r.r, g.g, b.b, g.a);
+    float crest = min(w.z, 1.5);
+    float lit = crest * min(strength / 14.0, 1.0);
+    c.rgb = c.rgb + half3(half(lit * 0.2)) * c.a;
+    c.rgb = min(c.rgb, half3(c.a));
+    return c;
+}
+
+// MARK: - Black hole (layer effect)
+// Gravitational lensing around `center`. Light is deflected toward the mass by bend · rs² / d, so close to
+// the horizon the sample crosses to the far side and the background wraps into an Einstein ring; inside the
+// horizon (d < rs) everything is black. A thin photon ring hugs the horizon and a swirling accretion glow
+// (fbm rotated with time, brighter on the approaching side) sits just outside it.
+//   size     layer size in points
+//   center   position of the hole
+//   radius   event-horizon radius rs in points
+//   bend     lensing strength (1 ≈ physical look, higher wraps more sky)
+//   glow     brightness of the photon ring and accretion glow
+//   time     seconds
+// The deflection is faded to zero at 5 · rs; samples move at most bend · rs and are clamped to the layer.
+
+[[ stitchable ]]
+half4 mlBlackHole(float2 position, SwiftUI::Layer layer, float2 size, float2 center, float radius, float bend,
+                  float glow, float time) {
+    float mask = float(layer.sample(position).a);
+    float rs = max(radius, 1.0);
+    float2 d = position - center;
+    float dist = max(length(d), 0.0001);
+    float2 dir = d / dist;
+    float fall = 1.0 - smoothstep(rs * 2.2, rs * 5.0, dist);
+    float deflect = bend * rs * rs / max(dist, rs) * fall;
+    float2 p = clamp(position - dir * deflect, float2(0.5), size - 0.5);
+    float3 rgb = float3(layer.sample(p).rgb);
+    float hole = smoothstep(rs - 1.0, rs + 1.0, dist);
+    float dim = mix(0.3, 1.0, smoothstep(rs, rs * 2.0, dist));
+    rgb *= hole * mix(1.0, dim, fall);
+    float x = (dist - rs * 1.07) / (rs * 0.05);
+    float ring = exp(-x * x);
+    float y = (dist - rs * 1.5) / (rs * 0.46);
+    float2 q = mlRot(dir, time * 0.9 + dist / rs * 1.4) * 2.4 + float2(dist / rs, 3.7);
+    float swirl = mlFbm(q);
+    float disc = exp(-y * y) * (0.25 + 1.1 * swirl) * hole;
+    float doppler = 0.62 + 0.38 * dot(dir, float2(-0.86, 0.5));
+    float3 hot = float3(1.0, 0.88, 0.62);
+    float3 warm = float3(1.0, 0.38, 0.08);
+    rgb += (hot * ring * 1.3 + mix(warm, hot, swirl * swirl) * disc * 1.05) * glow * doppler;
+    rgb = min(rgb, float3(1.0)) * mask;
+    return half4(half3(rgb), half(mask));
+}
+
+// MARK: - Wax melt (layer effect, applied to the outgoing scene)
+// The outgoing scene melts off the card. Every column has its own delay (broad lobes + narrow drips of
+// value noise, plus the distance from the tapped column), and the scene's top edge in that column falls
+// with that delay, leaving the incoming scene visible above it. The remaining wax slides down with its
+// edge and compresses by `goo` toward the bottom, like a sagging sheet. A glossy lip follows the edge and
+// a soft shadow is cast on the scene underneath.
+//   size      layer size in points
+//   progress  0…1
+//   originX   x of the tap: columns near it go first
+//   drip      width of the broad lobes in points (drips are ≈ 1/3 of it)
+//   goo       0 = the sheet slides off rigidly, 1 = it piles up at the bottom
+//   seed      changes the pattern per run
+// Samples move up to the layer height vertically.
+
+[[ stitchable ]]
+half4 mlWaxMelt(float2 position, SwiftUI::Layer layer, float2 size, float progress, float originX,
+                float drip, float goo, float seed) {
+    float pr = clamp(progress, 0.0, 1.0);
+    float w = max(drip, 4.0);
+    float n = mlGradNoise(float2(position.x / w, seed)) * 0.72
+            + mlGradNoise(float2(position.x / (w * 0.31), seed + 9.7)) * 0.28;
+    // Smoothstep flattens the extremes, so the slowest and fastest columns end in rounded lobes, not spikes.
+    n = n * n * (3.0 - 2.0 * n);
+    float away = abs(position.x - originX) / max(size.x, 1.0);
+    float delay = clamp(n * 0.64 + away * 0.36, 0.0, 1.0);
+    float spread = 0.8;
+    float local = clamp(pr * (1.0 + spread) - delay * spread, 0.0, 1.0);
+    // Gravity: slow start, then accelerating.
+    float e = local * local * (1.6 - 0.6 * local);
+    float edge = e * (size.y + 10.0);
+    float d = position.y - edge;
+    float mask = float(layer.sample(position).a);
+    float live = smoothstep(0.0, 0.03, e);
+    float rest = max(size.y - edge, 1.0);
+    float k = clamp(d / rest, 0.0, 1.0);
+    float sourceY = position.y - edge * (1.0 - clamp(goo, 0.0, 1.0) * k);
+    half4 c = layer.sample(float2(position.x, clamp(sourceY, 0.5, size.y - 0.5)));
+    float lip = exp(-max(d, 0.0) / 2.6) * live;
+    float body = exp(-max(d, 0.0) / 16.0) * live;
+    c.rgb = c.rgb * half(1.0 - 0.2 * body) + half3(half(0.6 * lip)) * c.a;
+    c.rgb = min(c.rgb, half3(c.a));
+    float cover = smoothstep(0.0, 1.4, d);
+    c *= half(cover);
+    float shadow = 0.34 * exp(-max(-d, 0.0) / 10.0) * mask * live * (1.0 - cover);
+    return c + half4(0.0h, 0.0h, 0.0h, half(shadow)) * (1.0h - c.a);
+}
+
+// MARK: - Ink bleed (color effect, applied to the incoming scene)
+// The incoming scene soaks in from `origin` like ink into paper. The arrival time of a pixel is its distance
+// from the origin (or from two smaller satellite blots that start later) warped by blotchy cloud-noise
+// absorbency and by two sets of long thin fibres (noise stretched 14:1 along two oblique directions) that wick the ink
+// ahead of the front. Pigment gathers at the wet front, so a band of `ink` colour rides the edge and dries off at the end.
+//   size      layer size in points
+//   origin    where the ink lands
+//   progress  0…1
+//   rough     blotchiness of the front (0 = a clean circle)
+//   fibre     how far the fibres wick ink ahead of the front
+//   edge      strength of the dark pigment line at the front
+//   ink       pigment colour of that line
+//   seed      changes the pattern per run
+
+[[ stitchable ]]
+half4 mlInkBleed(float2 position, half4 color, float2 size, float2 origin, float progress, float rough,
+                 float fibre, float edge, half4 ink, float seed) {
+    if (color.a < 0.001h) {
+        return color;
+    }
+    float pr = clamp(progress, 0.0, 1.0);
+    float2 farCorner = max(origin, size - origin);
+    float reach = max(length(farCorner), 1.0);
+    float dist = length(position - origin) / reach;
+    float2 s1 = origin + (float2(mlHash(float2(seed, 1.7)), mlHash(float2(3.1, seed))) - 0.5) * size * 0.9;
+    float2 s2 = origin + (float2(mlHash(float2(seed, 5.3)), mlHash(float2(8.9, seed))) - 0.5) * size * 0.9;
+    dist = min(dist, length(position - s1) / reach + 0.28);
+    dist = min(dist, length(position - s2) / reach + 0.42);
+    float blot = clamp(mlCloud(position / 64.0 + seed) - 0.5, -0.5, 0.5);
+    // Fibres run along two directions about 70° apart (never axis-aligned, which would read as pixels).
+    float2 fa = mlRot(position, 0.42);
+    float2 fb = mlRot(position, -0.8);
+    float f1 = mlGradNoise(float2(fa.x / 110.0 + seed, fa.y / 8.0)) - 0.5;
+    float f2 = mlGradNoise(float2(fb.x / 110.0 - seed, fb.y / 8.0)) - 0.5;
+    float grain = clamp(mlCloud(position / 16.0 - seed) - 0.5, -0.5, 0.5);
+    float field = dist + blot * rough * 0.9 + (f1 + f2) * fibre * 0.2 + grain * 0.06;
+    // The front sweeps exactly the range the field can take, so the stain grows for the whole run.
+    float margin = rough * 0.45 + fibre * 0.2 + 0.03;
+    float front = mix(-margin, 1.0 + margin + 0.09, pr);
+    float wet = front - field;
+    float alpha = smoothstep(0.0, 0.085, wet);
+    alpha *= alpha;
+    if (alpha <= 0.0) {
+        return half4(0.0h);
+    }
+    float settle = 1.0 - smoothstep(0.8, 1.0, pr);
+    float ring = smoothstep(0.02, 0.07, wet) * (1.0 - smoothstep(0.07, 0.2, wet));
+    float damp = (1.0 - smoothstep(0.08, 0.5, wet)) * 0.14;
+    float3 rgb = float3(color.rgb) / float(color.a);
+    rgb *= 1.0 - damp * settle;
+    rgb = mix(rgb, float3(ink.rgb), clamp(ring * edge * settle, 0.0, 1.0));
+    float a = float(color.a) * alpha;
+    return half4(half3(rgb * a), half(a));
+}
+
+// MARK: - Zoom blur (layer effect)
+// A radial blur toward `center` combined with a zoom: 16 samples are taken along the line from the pixel to
+// the center, covering `amount` of that distance, after the picture has been scaled by `zoom` about the
+// center. The near end of the streak is weighted toward red and the far end toward blue (`chroma`), which
+// gives streaks a spectral edge, and `exposure` lifts the brightness (the flash at the cut).
+//   size      layer size in points
+//   center    zoom center
+//   amount    0…1 streak length as a fraction of the distance to the center
+//   zoom      > 1 magnifies, < 1 shrinks (samples are clamped to the layer)
+//   chroma    0…1 spectral split along the streak
+//   exposure  added brightness, 0 = none
+// Samples can land anywhere in the layer.
+
+[[ stitchable ]]
+half4 mlZoomBlur(float2 position, SwiftUI::Layer layer, float2 size, float2 center, float amount, float zoom,
+                 float chroma, float exposure) {
+    float2 d = (position - center) / max(zoom, 0.05);
+    float jitter = mlHash(position);
+    float3 sum = float3(0.0);
+    float3 weight = float3(0.0);
+    float alpha = 0.0;
+    for (int i = 0; i < 16; i++) {
+        float t = (float(i) + jitter) / 16.0;
+        float2 p = clamp(center + d * (1.0 - amount * t), float2(0.5), size - 0.5);
+        half4 s = layer.sample(p);
+        float lean = (1.0 - 2.0 * t) * chroma;
+        float3 w = float3(1.0 + lean, 1.0, 1.0 - lean);
+        sum += float3(s.rgb) * w;
+        weight += w;
+        alpha += float(s.a);
+    }
+    float3 rgb = sum / weight;
+    alpha /= 16.0;
+    rgb = min(rgb * (1.0 + exposure) + exposure * 0.12 * alpha, float3(alpha));
+    return half4(half3(rgb), half(alpha));
+}
+
+// MARK: - ASCII (layer effect)
+// Right of `divider` the layer is redrawn as a character grid: each cell (0.62 · cell wide, `cell` tall)
+// takes the luminance of its center and shows one of ten 5×7 glyphs of rising ink density (" .:-=+*#%@").
+// Glyph bitmaps are packed three 5-bit rows per float, so no integer operations are needed.
+// Cells within `band` points of the divider show random glyphs re-rolled 12×/s (a decode front), and the
+// level of every cell is dithered by ±0.03 six times a second so the screen never looks frozen.
+//   cell      character cell height in points
+//   divider   x of the split: original on the left, characters on the right
+//   band      width of the scrambled decode front in points
+//   time      seconds
+//   mode      0 = glyphs keep the source colour on black, 1 = single `tint` phosphor, 2 = dark ink on paper
+//   tint      phosphor colour for mode 1
+//   contrast  luminance contrast around 0.5
+// Samples stay within one cell.
+
+static float3 mlAsciiGlyph(float level) {
+    if (level < 0.5) { return float3(0.0, 0.0, 0.0); }             // space
+    if (level < 1.5) { return float3(0.0, 12.0, 12.0); }           // .
+    if (level < 2.5) { return float3(396.0, 396.0, 0.0); }         // :
+    if (level < 3.5) { return float3(0.0, 31744.0, 0.0); }         // -
+    if (level < 4.5) { return float3(31.0, 992.0, 0.0); }          // =
+    if (level < 5.5) { return float3(132.0, 31876.0, 0.0); }       // +
+    if (level < 6.5) { return float3(686.0, 32213.0, 0.0); }       // *
+    if (level < 7.5) { return float3(10591.0, 11242.0, 10.0); }    // #
+    if (level < 8.5) { return float3(26434.0, 4363.0, 19.0); }     // %
+    return float3(14903.0, 22256.0, 14.0);                         // @
+}
+
+// Rows 0–2 live in glyph.x, rows 3–5 in glyph.y (first row in the highest 5 bits), row 6 in glyph.z.
+static float mlAsciiPixel(float3 glyph, float2 uv) {
+    if (uv.x < 0.0 || uv.x >= 1.0 || uv.y < 0.0 || uv.y >= 1.0) {
+        return 0.0;
+    }
+    float col = floor(uv.x * 5.0);
+    float row = floor(uv.y * 7.0);
+    float group = row < 3.0 ? glyph.x : (row < 6.0 ? glyph.y : glyph.z);
+    float slot = row < 3.0 ? row : (row < 6.0 ? row - 3.0 : 2.0);
+    float rowBits = fmod(floor(group / exp2((2.0 - slot) * 5.0)), 32.0);
+    return fmod(floor(rowBits / exp2(4.0 - col)), 2.0);
+}
+
+[[ stitchable ]]
+half4 mlAscii(float2 position, SwiftUI::Layer layer, float cell, float divider, float band, float time,
+              float mode, half4 tint, float contrast) {
+    half4 src = layer.sample(position);
+    float s = max(cell, 4.0);
+    float2 cs = float2(s * 0.62, s);
+    float2 id = floor(position / cs);
+    float2 uv = fract(position / cs);
+    half4 c = layer.sample((id + 0.5) * cs);
+    float3 rgb = c.a > 0.001h ? float3(c.rgb) / float(c.a) : float3(0.0);
+    float lum = dot(rgb, float3(0.299, 0.587, 0.114));
+    lum = clamp((lum - 0.5) * contrast + 0.5, 0.0, 1.0);
+    float flicker = (mlHash(id * 1.7 + floor(time * 6.0)) - 0.5) * 0.06;
+    float tone = clamp(lum + flicker, 0.0, 0.999);
+    if (mode > 1.5) {
+        tone = 0.999 - tone;
+    }
+    float level = floor(tone * 10.0);
+    float side = (id.x + 0.5) * cs.x - divider;
+    float tick = floor(time * 12.0);
+    float decode = 0.0;
+    if (side < band && mlHash(id + tick * 7.13) > side / max(band, 1.0)) {
+        level = floor(mlHash(id * 3.1 + tick) * 9.0) + 1.0;
+        decode = 1.0;
+    }
+    float bit = mlAsciiPixel(mlAsciiGlyph(level), (uv - float2(0.14, 0.1)) / float2(0.72, 0.8));
+    float3 bg = float3(0.02, 0.025, 0.04);
+    float3 fg = float3(1.0);
+    if (mode < 0.5) {
+        float peak = max(max(rgb.r, rgb.g), max(rgb.b, 0.001));
+        fg = mix(rgb / peak, float3(1.0), 0.18) * (0.6 + 0.4 * lum);
+        bg = rgb * 0.09 + float3(0.012, 0.014, 0.024);
+    } else if (mode < 1.5) {
+        fg = float3(tint.rgb) * (0.5 + 0.5 * lum);
+        bg = float3(tint.rgb) * 0.05;
+    } else {
+        fg = float3(0.11, 0.11, 0.15);
+        bg = float3(0.955, 0.94, 0.89);
+    }
+    float3 hot = mode > 1.5 ? float3(0.75, 0.2, 0.12) : float3(1.0);
+    fg = mix(fg, hot, decode * 0.7);
+    float3 ascii = mix(bg, fg, bit);
+    float a = float(src.a);
+    float split = smoothstep(divider - 0.5, divider + 0.5, position.x);
+    float3 outColor = mix(float3(src.rgb), ascii * a, split);
+    float dx = position.x - divider;
+    float seam = exp(-abs(dx) / 1.1) * 0.95 + (dx > 0.0 ? exp(-dx / 12.0) * 0.16 : 0.0);
+    float3 seamColor = (mode > 0.5 && mode < 1.5) ? float3(tint.rgb) : float3(1.0);
+    outColor = min(outColor + seamColor * seam * a, float3(a));
+    return half4(half3(outColor), half(a));
+}
+
+// MARK: - Thermal camera (layer effect)
+// Maps luminance to a five-stop false-colour ramp (c0 coldest … c4 hottest). The picture is softened with a
+// four-tap average like a low-resolution sensor, isotherm lines are drawn at every 1/8 of the range (their
+// width is derived from the local luminance gradient, so flat areas stay clean), and `shimmer` adds sensor
+// noise re-rolled 24×/s, faint line structure and a refresh band that rolls down the frame every ≈ 4.5 s.
+//   size      layer size in points
+//   time      seconds
+//   c0…c4     palette stops, cold → hot
+//   shimmer   0…1 amount of sensor noise and scan band
+//   contours  0…1 visibility of the isotherm lines
+//   gain      multiplies luminance before the lookup (sensitivity)
+// Samples move 1.6 points.
+
+[[ stitchable ]]
+half4 mlThermal(float2 position, SwiftUI::Layer layer, float2 size, float time, half4 c0, half4 c1, half4 c2,
+                half4 c3, half4 c4, float shimmer, float contours, float gain) {
+    float mask = float(layer.sample(position).a);
+    float e = 1.6;
+    float l = mlLuma(layer.sample(position - float2(e, 0.0)));
+    float r = mlLuma(layer.sample(position + float2(e, 0.0)));
+    float u = mlLuma(layer.sample(position - float2(0.0, e)));
+    float dn = mlLuma(layer.sample(position + float2(0.0, e)));
+    float lum = (l + r + u + dn) * 0.25 * gain;
+    float slope = (abs(r - l) + abs(dn - u)) * gain / (2.0 * e);
+    float noise = (mlHash(floor(position * 1.5) + floor(time * 24.0) * 3.7) - 0.5) * 0.05;
+    float scanY = fract(time * 0.22) * (size.y + 80.0) - 40.0;
+    float sd = (position.y - scanY) / 20.0;
+    float bandGlow = exp(-sd * sd) * 0.05;
+    float lines = sin(position.y * 3.14159) * 0.012;
+    float t = clamp(lum + (noise + bandGlow + lines) * shimmer, 0.0, 1.0);
+    float x = t * 4.0;
+    float3 a = x < 1.0 ? float3(c0.rgb) : (x < 2.0 ? float3(c1.rgb) : (x < 3.0 ? float3(c2.rgb) : float3(c3.rgb)));
+    float3 b = x < 1.0 ? float3(c1.rgb) : (x < 2.0 ? float3(c2.rgb) : (x < 3.0 ? float3(c3.rgb) : float3(c4.rgb)));
+    float3 col = mix(a, b, clamp(x - floor(min(x, 3.0)), 0.0, 1.0));
+    float f = fract(lum * 8.0);
+    float nearest = min(f, 1.0 - f);
+    float lineWidth = max(slope * 8.0 * 0.9, 0.0005);
+    float iso = (1.0 - smoothstep(0.0, lineWidth, nearest)) * smoothstep(0.0015, 0.008, slope);
+    col = mix(col, float3(1.0), iso * contours * 0.4);
+    return half4(half3(col * mask), half(mask));
+}
+
+// MARK: - Frost (layer effect)
+// Ice creeping over glass from its edges. A pixel is frosted when
+//   grow · 0.95 − edgeDistance + crystals + blotches − melt · 1.6 > 0
+// (edgeDistance is 0 at the border and 1 at the center of the short side), so the front advances from the
+// border inward and the feathers (spines with slanted barbs, in three orientations 60° apart like ice's
+// hexagonal habit, each owning its own patches of the pane) run ahead of it. Frosted glass refracts along the
+// crystal gradient, blurs with five taps, hazes toward icy white and sparkles on the ridges. Ten melt points
+// (x, y, life 0…1) clear warm spots with a Gaussian footprint; as their life decays the ice grows back
+// through the same field, and the rim of a melted spot carries a bright water meniscus.
+//   size        layer size in points
+//   grow        0…1 coverage
+//   refraction  refraction offset in points
+//   time        seconds (sparkle)
+//   m0…m9       melt points: xy position, z life (0 = unused)
+//   meltRadius  footprint of a melt point in points
+// Samples move at most refraction × 1.6 + 4.
+
+static float mlFrostCrystal(float2 p) {
+    // Three crystal orientations 60° apart; soft noise decides which one owns each patch of glass, so the
+    // pane breaks into plates like real window frost.
+    float w0 = mlGradNoise(p * 0.013);
+    float w1 = mlGradNoise(p * 0.013 + 17.0);
+    float w2 = mlGradNoise(p * 0.013 + 41.0);
+    float bend = (mlGradNoise(p * 0.02 + 5.0) - 0.5) * 9.0;
+    float fade = mlGradNoise(p * 0.05 + 9.0);
+    float v = 0.0;
+    for (int k = 0; k < 3; k++) {
+        float w = k == 0 ? w0 : (k == 1 ? w1 : w2);
+        float other = k == 0 ? max(w1, w2) : (k == 1 ? max(w0, w2) : max(w0, w1));
+        float domain = smoothstep(0.0, 0.04, w - other);
+        float2 r = mlRot(p, 0.5 + float(k) * 1.0472);
+        // A feather: spines every 36 pt, with barbs slanting away from each spine on both sides (the phase
+        // grows with the distance t to the spine) and fading out half-way to the next one.
+        float t = abs(fract(r.x / 36.0 + bend * 0.02) - 0.5) * 36.0;
+        float barb = pow(0.5 + 0.5 * sin(r.y * 1.0 + t * 0.6 + bend), 5.0);
+        barb *= (1.0 - smoothstep(7.0, 18.0, t)) * smoothstep(0.25, 0.6, fade);
+        float spine = exp(-t * t / 2.2);
+        v += domain * max(barb, spine);
+    }
+    return clamp(v, 0.0, 1.0);
+}
+
+static float mlFrostMelt(float2 p, float3 m, float r2) {
+    float2 d = p - m.xy;
+    return m.z * exp(-dot(d, d) / r2);
+}
+
+[[ stitchable ]]
+half4 mlFrost(float2 position, SwiftUI::Layer layer, float2 size, float grow, float refraction, float time,
+              float3 m0, float3 m1, float3 m2, float3 m3, float3 m4, float3 m5, float3 m6, float3 m7,
+              float3 m8, float3 m9, float meltRadius) {
+    float edgeDist = min(min(position.x, size.x - position.x), min(position.y, size.y - position.y))
+                   / (0.5 * min(size.x, size.y));
+    float crystal = mlFrostCrystal(position);
+    float blot = mlCloud(position / 54.0);
+    float r2 = max(meltRadius * meltRadius, 1.0);
+    float melt = mlFrostMelt(position, m0, r2);
+    melt = max(melt, mlFrostMelt(position, m1, r2));
+    melt = max(melt, mlFrostMelt(position, m2, r2));
+    melt = max(melt, mlFrostMelt(position, m3, r2));
+    melt = max(melt, mlFrostMelt(position, m4, r2));
+    melt = max(melt, mlFrostMelt(position, m5, r2));
+    melt = max(melt, mlFrostMelt(position, m6, r2));
+    melt = max(melt, mlFrostMelt(position, m7, r2));
+    melt = max(melt, mlFrostMelt(position, m8, r2));
+    melt = max(melt, mlFrostMelt(position, m9, r2));
+    float level = grow * 0.95 - edgeDist + (crystal - 0.3) * 0.28 + (blot - 0.5) * 0.5 - melt * 1.6;
+    float frost = smoothstep(0.0, 0.25, level);
+    if (frost <= 0.001) {
+        return layer.sample(position);
+    }
+    float cx = mlFrostCrystal(position + float2(1.5, 0.0));
+    float cy = mlFrostCrystal(position + float2(0.0, 1.5));
+    float2 grad = clamp(float2(cx - crystal, cy - crystal) * 14.0, float2(-1.0), float2(1.0));
+    float rim = frost * (1.0 - frost) * 4.0 * smoothstep(0.03, 0.25, melt);
+    float2 offset = grad * refraction * (frost + rim * 0.6);
+    float blur = 3.0 * frost;
+    half4 c = layer.sample(position + offset) * 0.4h
+            + layer.sample(position + offset + float2(blur, blur * 0.4)) * 0.15h
+            + layer.sample(position + offset - float2(blur, blur * 0.4)) * 0.15h
+            + layer.sample(position + offset + float2(-blur * 0.4, blur)) * 0.15h
+            + layer.sample(position + offset - float2(-blur * 0.4, blur)) * 0.15h;
+    float alpha = float(c.a);
+    // Thin and glassy at the growing front, denser toward the edge it came from.
+    float depth = smoothstep(0.0, 0.6, level);
+    float haze = frost * (0.2 + 0.24 * depth + 0.5 * crystal);
+    float3 ice = float3(0.87, 0.94, 1.0);
+    float3 rgb = mix(float3(c.rgb), ice * alpha, min(haze, 0.9));
+    float twinkle = 0.5 + 0.5 * sin(time * 2.2 + mlHash(floor(position / 3.0)) * 6.2831853);
+    float sparkle = pow(crystal, 5.0) * frost * twinkle * 0.3;
+    rgb += (sparkle + rim * 0.2) * alpha;
+    rgb = min(rgb, float3(alpha));
+    return half4(half3(rgb), half(alpha));
+}
+
+// MARK: - Prism (layer effect)
+// A bar of glass with a triangular cross-section lies across the content. `u` runs −1…1 across the bar and the
+// ridge sits at u = −0.2, so the two facets have constant, opposite slopes: each shifts what is behind it
+// sideways by slope · bend, splitting the picture at the ridge. Seven wavelengths are sampled with offsets
+// spread by `dispersion` and recombined with triangular R/G/B response curves, which leaves spectral fringes
+// on every contrast edge. Facet shading, a ridge highlight and bevel lines draw the glass, and a rainbow is
+// cast on the content beside the exit face.
+//   center      a point on the bar's axis
+//   angle       direction of the bar's axis in radians (y-down)
+//   width       bar width in points
+//   bend        refraction offset in points for a unit facet slope
+//   dispersion  0…1 spread between red and violet
+// Samples move at most 1.25 · bend · (1 + dispersion).
+
+static float3 mlSpectrum(float t) {
+    return clamp(1.0 - abs(t * 2.0 - float3(0.0, 1.0, 2.0)), float3(0.0), float3(1.0));
+}
+
+[[ stitchable ]]
+half4 mlPrism(float2 position, SwiftUI::Layer layer, float2 center, float angle, float width, float bend,
+              float dispersion) {
+    half4 base = layer.sample(position);
+    float2 axis = float2(cos(angle), sin(angle));
+    float2 normal = float2(-axis.y, axis.x);
+    float halfWidth = max(width * 0.5, 2.0);
+    float u = dot(position - center, normal) / halfWidth;
+    float mask = float(base.a);
+    // Rainbow cast beside the exit face (u from 1.04 to 1.9).
+    float v = (u - 1.04) / 0.86;
+    float cast = smoothstep(0.0, 0.12, v) * (1.0 - smoothstep(0.75, 1.0, v));
+    float3 rainbow = mlSpectrum(clamp(v, 0.0, 1.0)) + float3(0.35, 0.0, 0.45) * smoothstep(0.82, 1.0, v);
+    float3 outside = float3(base.rgb) + rainbow * cast * (0.16 + 0.34 * dispersion) * mask;
+    outside = min(outside, float3(mask));
+    if (abs(u) >= 1.02) {
+        return half4(half3(outside), base.a);
+    }
+    float ridge = -0.2;
+    float slope = u < ridge ? 1.0 / (1.0 + ridge) : -1.0 / (1.0 - ridge);
+    float3 sum = float3(0.0);
+    float3 weight = float3(0.0);
+    float alpha = 0.0;
+    for (int i = 0; i < 7; i++) {
+        float t = float(i) / 6.0;
+        float shift = slope * bend * (1.0 + dispersion * (t - 0.5) * 2.0);
+        half4 s = layer.sample(position + normal * shift);
+        float3 w = mlSpectrum(t) + 0.02;
+        sum += float3(s.rgb) * w;
+        weight += w;
+        alpha += float(s.a);
+    }
+    float3 rgb = sum / weight;
+    alpha = max(alpha / 7.0, mask);
+    float facet = u < ridge ? 0.10 : -0.05;
+    float ridgeLine = exp(-abs(u - ridge) * halfWidth / 1.3) * 0.55;
+    float bevel = exp(-(1.0 - abs(u)) * halfWidth / 1.2) * 0.4;
+    rgb = rgb * (1.0 + facet) + (ridgeLine + bevel + 0.035) * alpha;
+    rgb = min(rgb, float3(alpha));
+    float inside = 1.0 - smoothstep(0.98, 1.02, abs(u));
+    return half4(half3(mix(outside, rgb, inside)), half(mix(mask, alpha, inside)));
+}
+
+// MARK: - Liquid chrome (color effect, generative)
+// A slowly flowing height field (two soft octaves of gradient noise on noise-warped coordinates plus one long
+// swell) is turned into a normal by finite differences, and the mirror reflection of the view ray looks up a
+// procedural studio: a sky that is brightest at the horizon, a hard black line right below it, a pale floor
+// under that and faint vertical softbox stripes. That hard horizon
+// is what makes the bands read as polished metal. The finger presses a dent that the reflections wrap around
+// and a tap sends one decaying ring through the surface.
+//   size         view size in points
+//   time         seconds (already speed-scaled)
+//   scale        feature size of the flow (higher = finer ripples)
+//   relief       normal strength: 0 = flat mirror, 1 = deep folds
+//   tint         metal colour multiplied into the reflection (near-white = chrome, warm = gold)
+//   iridescence  0…1 thin-film rainbow mixed over the reflection
+//   touch        dent position
+//   press        0…1 dent depth
+//   ripple       ring origin
+//   rippleAge    seconds since the tap (< 0 = none)
+
+static float mlChromeHeight(float2 position, float2 size, float time, float scale, float2 touch, float press,
+                            float2 ripple, float rippleAge) {
+    float2 p = position / max(size.y, 1.0) * scale;
+    // Smooth on purpose: a mirror shows every high-frequency wrinkle, so only two soft octaves are used.
+    float2 w = float2(mlGradNoise(p * 0.9 + float2(time * 0.11, time * 0.07)),
+                      mlGradNoise(p * 0.9 + float2(5.2 - time * 0.09, 1.3 + time * 0.10)));
+    float2 q = p + (w - 0.5) * 1.6;
+    float h = mlGradNoise(q + float2(0.0, time * 0.06))
+            + 0.42 * mlGradNoise(mlRot(q, 0.6) * 2.1 + float2(time * 0.08, 7.0));
+    h += 0.12 * sin((p.x + p.y) * 1.6 + w.x * 5.0 + time * 0.5);
+    float2 d = position - touch;
+    h -= press * 0.6 * exp(-dot(d, d) / (64.0 * 64.0));
+    if (rippleAge >= 0.0 && rippleAge < 3.0) {
+        float dist = length(position - ripple);
+        float front = rippleAge * 230.0;
+        h += sin((dist - front) * 0.085) * exp(-abs(dist - front) / 46.0) * exp(-rippleAge * 1.5) * 0.14;
+    }
+    return h;
+}
+
+[[ stitchable ]]
+half4 mlLiquidChrome(float2 position, half4 color, float2 size, float time, float scale, float relief,
+                     half4 tint, float iridescence, float2 touch, float press, float2 ripple, float rippleAge) {
+    float e = 2.0;
+    float h = mlChromeHeight(position, size, time, scale, touch, press, ripple, rippleAge);
+    float hx = mlChromeHeight(position + float2(e, 0.0), size, time, scale, touch, press, ripple, rippleAge);
+    float hy = mlChromeHeight(position + float2(0.0, e), size, time, scale, touch, press, ripple, rippleAge);
+    float k = relief * 130.0;
+    float3 n = normalize(float3(-(hx - h) / e * k, -(hy - h) / e * k, 1.0));
+    float3 refl = float3(2.0 * n.z * n.x, 2.0 * n.z * n.y, 2.0 * n.z * n.z - 1.0);
+    float up = -refl.y + 0.18 * refl.x;
+    // Studio: a bright haze at the horizon rising to a deep zenith, and below the horizon a black band
+    // that warms toward the floor. The 0.04-wide jump between the two is the "chrome line".
+    float3 sky = mix(float3(0.97, 0.98, 1.0), float3(0.2, 0.25, 0.36), smoothstep(0.0, 0.8, up));
+    float3 ground = mix(float3(0.02, 0.02, 0.03), float3(0.7, 0.68, 0.68), smoothstep(0.0, 0.5, -up));
+    ground *= 1.0 - 0.6 * smoothstep(0.5, 1.0, -up);
+    float3 env = mix(ground, sky, smoothstep(-0.02, 0.02, up));
+    env *= 0.88 + 0.12 * sin(refl.x * 7.0 + 1.0);
+    float3 metal = env * float3(tint.rgb);
+    float3 film = 0.5 + 0.5 * cos(6.2831853 * (h * 1.1 + refl.x * 0.3 + float3(0.0, 0.33, 0.67)));
+    metal = mix(metal, env * (0.3 + film * 0.95), clamp(iridescence, 0.0, 1.0));
+    float3 light = normalize(float3(-0.4, -0.6, 0.7));
+    float spec = pow(max(dot(n, light), 0.0), 48.0);
+    metal += spec * 0.85;
+    metal *= 0.9 + 0.1 * n.z;
+    metal = clamp(metal, float3(0.0), float3(1.0));
+    return half4(half3(metal), 1.0h) * color.a;
+}
+
+// MARK: - Nebula (color effect, generative)
+// Three depths of gas and two of stars. Far gas (`ca`) and near gas (`cb`) are fbm clouds on a shared warped
+// domain; where both are dense a hot core in `cc` shows through, and a third, nearest fbm cuts dark dust lanes.
+// Each layer scrolls with its own share of `pan`, which is the whole parallax. Stars sit on two hashed grids
+// (one per cell at most), twinkle at their own rate and dim behind dense gas. A tap ignites a flare with four
+// diffraction spikes that lights the gas around it and fades over ≈ 2.5 s. The result is tone-mapped with 1 − e^(−1.5c).
+//   size       view size in points
+//   time       seconds (already speed-scaled)
+//   pan        camera offset in view heights
+//   density    0…1 how much of the frame the gas fills
+//   stars      0…1 star count
+//   ca, cb, cc far gas, near gas and core colours
+//   flare      flare position
+//   flareAge   seconds since the tap (< 0 = none)
+
+static float mlStars(float2 p, float amount, float time, float salt) {
+    float2 g = floor(p);
+    float2 f = fract(p);
+    float h = mlHash(g + salt);
+    if (h > amount) {
+        return 0.0;
+    }
+    float2 c = float2(mlHash(g * 1.3 + salt + 2.1), mlHash(g * 1.7 + salt + 5.3)) * 0.7 + 0.15;
+    float d = length(f - c);
+    float size = 0.03 + 0.08 * mlHash(g + salt + 9.1);
+    float twinkle = 0.62 + 0.38 * sin(time * (1.2 + 5.0 * mlHash(g + salt + 4.4)) + h * 60.0);
+    return ((1.0 - smoothstep(0.0, size, d)) + exp(-d * d / (size * size * 5.0)) * 0.35) * twinkle;
+}
+
+[[ stitchable ]]
+half4 mlNebula(float2 position, half4 color, float2 size, float time, float2 pan, float density, float stars,
+               half4 ca, half4 cb, half4 cc, float2 flare, float flareAge) {
+    float2 uv = (position - 0.5 * size) / max(size.y, 1.0);
+    float2 p1 = uv * 1.5 + pan * 0.25 + float2(time * 0.010, 0.0);
+    float2 warp = float2(mlCloud(p1 * 0.9 + float2(0.0, time * 0.02)), mlCloud(p1 * 0.9 + float2(4.7, -time * 0.017)));
+    float n1 = mlCloud(p1 * 1.1 + (warp - 0.5) * 0.9);
+    float2 p2 = uv * 1.9 + pan * 0.6 + float2(-time * 0.016, time * 0.008) + 7.3;
+    float n2 = mlCloud(p2 + (warp.yx - 0.5) * 0.7);
+    float dust = mlCloud(uv * 2.8 + pan * 0.95 + float2(time * 0.02, 3.1));
+    // Squared ramps above a floor: gas fades into space at its rim and keeps rising toward its core.
+    float lo = 0.5 - 0.25 * density;
+    float gasFar = clamp((n1 - lo) / 0.5, 0.0, 1.2);
+    float gasNear = clamp((n2 - lo - 0.03) / 0.5, 0.0, 1.2);
+    gasFar *= gasFar;
+    gasNear *= gasNear;
+    float3 col = float3(0.012, 0.014, 0.04);
+    col += float3(ca.rgb) * gasFar * 1.15;
+    col += float3(cb.rgb) * gasNear * 0.85;
+    col += float3(cc.rgb) * gasFar * gasNear * 1.3;
+    col *= 1.0 - 0.6 * smoothstep(0.45, 0.75, dust);
+    float gas = clamp(gasFar + gasNear, 0.0, 1.0);
+    float sFar = mlStars(uv * 58.0 + pan * 9.0, 0.10 + 0.34 * stars, time, 0.0);
+    float sNear = mlStars(uv * 24.0 + pan * 12.0, 0.04 + 0.22 * stars, time, 31.7);
+    col += float3(0.82, 0.88, 1.0) * sFar * 0.75 * (1.0 - 0.6 * gas);
+    col += float3(1.0, 0.95, 0.88) * sNear * 1.5 * (1.0 - 0.35 * gas);
+    if (flareAge >= 0.0 && flareAge < 3.0) {
+        float env = smoothstep(0.0, 0.12, flareAge) * exp(-flareAge * 1.7);
+        float2 fd = (position - flare) / max(size.y, 1.0);
+        float r = length(fd);
+        float core = exp(-r * r * 900.0) * 3.0 + exp(-r * 16.0) * 0.5;
+        float spikes = exp(-abs(fd.x) * 160.0) * exp(-abs(fd.y) * 9.0)
+                     + exp(-abs(fd.y) * 160.0) * exp(-abs(fd.x) * 9.0);
+        col += float3(1.0, 0.96, 0.9) * (core + spikes * 1.2) * env;
+        col += float3(cc.rgb) * gas * exp(-r * 4.5) * env * 1.6;
+    }
+    float vignette = 1.0 - 0.35 * dot(uv, uv);
+    col = (1.0 - exp(-col * 1.5)) * vignette;
+    return half4(half3(clamp(col, float3(0.0), float3(1.0))), 1.0h) * color.a;
+}
