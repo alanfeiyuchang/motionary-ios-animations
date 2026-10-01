@@ -25,5 +25,16 @@ enum MorphEffects {
         .morphGridToRing,
         .morphSortHop,
         .morphLiquidGlass,
+        .morphNotificationExpand,
+        .morphAvatarProfile,
+        .morphDateCellExpand,
+        .morphAppLaunch,
+        .morphStoryOpen,
+        .morphPinToCard,
+        .morphDigitMorph,
+        .morphBlobCycle,
+        .morphPageCurl,
+        .morphShutterIris,
+        .morphCalendarWeekMonth,
     ]
 }
