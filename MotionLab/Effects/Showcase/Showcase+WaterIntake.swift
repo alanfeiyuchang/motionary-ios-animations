@@ -311,11 +311,15 @@ private struct WaterSpray: View {
             let depth = size.height * CGFloat(level)
             if depth > 14 {
                 for index in 0..<7 {
-                    let seed = Double(index)
-                    let rise = (time * (0.16 + sportHash(seed * 2.3) * 0.2) + sportHash(seed * 7.1)).truncatingRemainder(dividingBy: 1)
-                    let x = size.width * CGFloat(0.22 + sportHash(seed * 4.9) * 0.56) + CGFloat(sin(time * 2 + seed) * 2)
-                    let y = size.height - depth * CGFloat(rise)
-                    let radius = CGFloat(1.2 + sportHash(seed * 1.3) * 1.8)
+                    let seed: Double = Double(index)
+                    let speed: Double = 0.16 + sportHash(seed * 2.3) * 0.2
+                    let phase: Double = time * speed + sportHash(seed * 7.1)
+                    let rise: Double = phase.truncatingRemainder(dividingBy: 1)
+                    let lane: Double = 0.22 + sportHash(seed * 4.9) * 0.56
+                    let sway: Double = sin(time * 2 + seed) * 2
+                    let x: CGFloat = size.width * CGFloat(lane) + CGFloat(sway)
+                    let y: CGFloat = size.height - depth * CGFloat(rise)
+                    let radius: CGFloat = CGFloat(1.2 + sportHash(seed * 1.3) * 1.8)
                     context.opacity = 0.4 * (1 - rise * 0.6)
                     context.stroke(Path(ellipseIn: CGRect(x: x - radius, y: y - radius, width: radius * 2, height: radius * 2)), with: .color(.white), lineWidth: 0.9)
                 }
@@ -323,13 +327,14 @@ private struct WaterSpray: View {
             guard since >= 0, since < 0.7 else { return }
             let origin = CGPoint(x: size.width / 2, y: size.height * CGFloat(1 - splashLevel))
             for index in 0..<6 {
-                let seed = Double(index)
+                let seed: Double = Double(index)
                 let side: Double = index % 2 == 0 ? 1 : -1
-                let vx = side * (16 + sportHash(seed * 3.3) * 46)
-                let vy = 95 + sportHash(seed * 5.7) * 70
-                let x = origin.x + CGFloat(vx * since)
-                let y = origin.y - CGFloat(vy * since - 0.5 * 420 * since * since)
-                let radius = CGFloat(2.6 - since * 2)
+                let vx: Double = side * (16 + sportHash(seed * 3.3) * 46)
+                let vy: Double = 95 + sportHash(seed * 5.7) * 70
+                let fall: Double = 0.5 * 420 * since * since
+                let x: CGFloat = origin.x + CGFloat(vx * since)
+                let y: CGFloat = origin.y - CGFloat(vy * since - fall)
+                let radius: CGFloat = CGFloat(2.6 - since * 2)
                 guard radius > 0.4 else { continue }
                 context.opacity = min(1, (0.7 - since) * 4)
                 context.fill(Path(ellipseIn: CGRect(x: x - radius, y: y - radius, width: radius * 2, height: radius * 2)), with: .color(Color(hex: 0xCDEFFF)))

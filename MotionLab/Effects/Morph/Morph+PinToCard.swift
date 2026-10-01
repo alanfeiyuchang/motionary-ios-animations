@@ -233,11 +233,15 @@ private struct PinScene: View {
     private func ground(place: PinPlace, shift: CGSize, open: CGFloat) -> some View {
         let tip = CGPoint(x: place.spot.x + shift.width, y: place.spot.y + shift.height)
         let airborne: CGFloat = MorphMath.unit(lift)
+        let shadowAlpha: Double = Double((0.32 - 0.16 * airborne) * (1 - open))
+        let shadowWidth: CGFloat = 16 + 12 * airborne
+        let shadowHeight: CGFloat = 6 + 3 * airborne
+        let shadowBlur: CGFloat = 1.5 + 2 * airborne
         return ZStack {
             Ellipse()
-                .fill(Color.black.opacity(Double((0.32 - 0.16 * airborne) * (1 - open))))
-                .frame(width: 16 + 12 * airborne, height: 6 + 3 * airborne)
-                .blur(radius: 1.5 + 2 * airborne)
+                .fill(Color.black.opacity(shadowAlpha))
+                .frame(width: shadowWidth, height: shadowHeight)
+                .blur(radius: shadowBlur)
             Ellipse()
                 .strokeBorder(place.color, lineWidth: 2)
                 .frame(width: 18 + 62 * ripple, height: (18 + 62 * ripple) * 0.46)

@@ -125,7 +125,7 @@ export default function BottomSheet({ ctx }: DemoProps) {
 
 const rowIcons: LucideIcon[] = [Coffee, Utensils, BookOpen, TramFront, Leaf];
 const rowNames: [string, string][] = [
-  ["Blue Bottle Coffee", "蓝瓶咖啡"],
+  ["Corner Café", "街角咖啡"],
   ["Noodle House", "面馆"],
   ["City Library", "城市图书馆"],
   ["Central Station", "中央车站"],

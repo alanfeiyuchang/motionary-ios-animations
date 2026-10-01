@@ -173,7 +173,7 @@ private struct NearbyRow: View {
 
     private static let symbols = ["cup.and.saucer.fill", "fork.knife", "book.fill", "tram.fill", "leaf.fill"]
     private static let names: [LocalizedText] = [
-        L("Blue Bottle Coffee", "蓝瓶咖啡"), L("Noodle House", "面馆"), L("City Library", "城市图书馆"),
+        L("Corner Café", "街角咖啡"), L("Noodle House", "面馆"), L("City Library", "城市图书馆"),
         L("Central Station", "中央车站"), L("Riverside Park", "滨江公园"),
     ]
 

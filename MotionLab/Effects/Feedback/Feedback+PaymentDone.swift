@@ -58,7 +58,7 @@ private struct PaymentDoneDemo: View {
             VStack(spacing: 0) {
                 miniCard
                     .padding(.top, 26)
-                Text(zh ? "蓝瓶咖啡" : "Blue Bottle Coffee")
+                Text(zh ? "街角咖啡" : "Corner Café")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .padding(.top, 14)

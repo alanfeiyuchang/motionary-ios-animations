@@ -277,14 +277,17 @@ private struct ButtonSpecularGlass: View {
 
     /// Light that crossed the glass and catches the far wall: a crescent hugging the edge opposite the highlight.
     private var farRim: some View {
-        Capsule()
-            .strokeBorder(Color.white.opacity(intensity * 0.75), lineWidth: 3.5)
+        let rimOpacity: Double = Double(intensity) * 0.75
+        let rimX: CGFloat = -light.width * glass.width / 2
+        let rimY: CGFloat = -light.height * glass.height / 2
+        return Capsule()
+            .strokeBorder(Color.white.opacity(rimOpacity), lineWidth: 3.5)
             .blur(radius: 2.5)
             .mask {
                 Circle()
                     .fill(RadialGradient(colors: [.white, .clear], center: .center, startRadius: 0, endRadius: 80))
                     .frame(width: 160, height: 160)
-                    .offset(x: -light.width * glass.width / 2, y: -light.height * glass.height / 2)
+                    .offset(x: rimX, y: rimY)
             }
             .blendMode(.plusLighter)
     }

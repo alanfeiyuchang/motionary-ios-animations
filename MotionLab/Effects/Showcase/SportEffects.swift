@@ -4,21 +4,21 @@ import SwiftUI
 /// Each effect lives in its own `Sport+<Name>.swift` file; shared sport-only helpers are below.
 enum ShowcaseSportEffects {
     static let all: [Effect] = [
-        .showcaseSlideToStart,
-        .showcaseSpeedLine,
-        .showcaseFreshSnow,
-        .showcaseBoardCard,
-        .showcaseBestLine,
-        .showcasePhotoPlay,
-        .showcaseSpotsGrid,
-        .showcaseGoCountdown,
-        .showcaseSummitBadge,
-        .showcaseAltitudeRuler,
-        .showcaseLiftStatus,
-        .showcaseHeartZone,
-        .showcaseRunSummary,
-        .showcaseWeatherWidget,
-        .showcaseGearChecklist,
+        Effect.showcaseSlideToStart,
+        Effect.showcaseSpeedLine,
+        Effect.showcaseFreshSnow,
+        Effect.showcaseBoardCard,
+        Effect.showcaseBestLine,
+        Effect.showcasePhotoPlay,
+        Effect.showcaseSpotsGrid,
+        Effect.showcaseGoCountdown,
+        Effect.showcaseSummitBadge,
+        Effect.showcaseAltitudeRuler,
+        Effect.showcaseLiftStatus,
+        Effect.showcaseHeartZone,
+        Effect.showcaseRunSummary,
+        Effect.showcaseWeatherWidget,
+        Effect.showcaseGearChecklist,
     ]
 }
 

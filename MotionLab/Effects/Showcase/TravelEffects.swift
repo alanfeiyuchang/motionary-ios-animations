@@ -4,19 +4,19 @@ import SwiftUI
 /// (dark glossy trip-planner UI: fog wipe, flight path, chips, boarding pass…).
 enum ShowcaseTravelEffects {
     static let all: [Effect] = [
-        .showcaseFogWipe,
-        .showcaseFlightPath,
-        .showcaseTripChips,
-        .showcaseGetStarted,
-        .showcaseDestinationCarousel,
-        .showcaseBoardingPass,
-        .showcasePinRoute,
-        .showcaseItinerary,
-        .showcaseTransitLine,
-        .showcaseSaveBurst,
-        .showcaseDateRange,
-        .showcasePolaroidFan,
-        .showcaseFlipClock,
-        .showcaseNowPlaying,
+        Effect.showcaseFogWipe,
+        Effect.showcaseFlightPath,
+        Effect.showcaseTripChips,
+        Effect.showcaseGetStarted,
+        Effect.showcaseDestinationCarousel,
+        Effect.showcaseBoardingPass,
+        Effect.showcasePinRoute,
+        Effect.showcaseItinerary,
+        Effect.showcaseTransitLine,
+        Effect.showcaseSaveBurst,
+        Effect.showcaseDateRange,
+        Effect.showcasePolaroidFan,
+        Effect.showcaseFlipClock,
+        Effect.showcaseNowPlaying,
     ]
 }

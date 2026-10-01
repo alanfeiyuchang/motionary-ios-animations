@@ -4,8 +4,8 @@ import SwiftUI
 /// so the category is not only about outdoor trips.
 enum ShowcaseLifeEffects {
     static let all: [Effect] = [
-        .showcaseFinanceCard,
-        .showcaseSleepTimeline,
-        .showcaseEvCharge,
+        Effect.showcaseFinanceCard,
+        Effect.showcaseSleepTimeline,
+        Effect.showcaseEvCharge,
     ]
 }

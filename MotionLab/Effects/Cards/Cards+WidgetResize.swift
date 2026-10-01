@@ -180,20 +180,23 @@ private struct CardsWidgetScene: View, Animatable {
     private var icons: some View {
         let pitch: CGFloat = (CardsWidgetLayout.large - 62) / 3
         return ForEach(0..<16, id: \.self) { slot in
-            let column = CGFloat(slot % 4)
-            let row = CGFloat(slot / 4)
-            let centre = CGPoint(x: column * pitch + 31, y: row * pitch + 31)
+            let column: CGFloat = CGFloat(slot % 4)
+            let row: CGFloat = CGFloat(slot / 4)
+            let centreX: CGFloat = column * pitch + 31
+            let centreY: CGFloat = row * pitch + 31
             // Positive once the icon's centre is clear of the widget on either axis.
-            let clearance: CGFloat = max(centre.x - size.width, centre.y - size.height)
-            let amount = ((clearance + 22) / 34).clamped(to: 0...1)
+            let clearance: CGFloat = max(centreX - size.width, centreY - size.height)
+            let amount: CGFloat = ((clearance + 22) / 34).clamped(to: 0...1)
+            let tint: Color = Palette.spectrum[(slot * 3) % Palette.spectrum.count].opacity(0.3)
+            let iconScale: CGFloat = 0.7 + 0.3 * amount
             RoundedRectangle(cornerRadius: 15, style: .continuous)
-                .fill(Palette.spectrum[(slot * 3) % Palette.spectrum.count].opacity(0.3))
+                .fill(tint)
                 .overlay {
                     RoundedRectangle(cornerRadius: 15, style: .continuous)
                         .strokeBorder(Color.primary.opacity(0.08))
                 }
                 .frame(width: 62, height: 62)
-                .scaleEffect(0.7 + 0.3 * amount)
+                .scaleEffect(iconScale)
                 .opacity(Double(amount))
                 .offset(x: column * pitch, y: row * pitch)
         }

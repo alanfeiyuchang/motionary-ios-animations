@@ -219,13 +219,16 @@ private struct InputPowerRing: View, Animatable {
     }
 
     var body: some View {
-        let line = 0.8 + 4 * (1 - progress)
+        let line: CGFloat = 0.8 + 4 * (1 - progress)
+        let scale: CGFloat = 1 + (reach - 1) * progress
+        let fadeIn: CGFloat = min(progress * 10, 1)
+        let alpha: Double = Double((1 - progress) * fadeIn)
         return Circle()
             .strokeBorder(tint, lineWidth: line)
             .overlay(Circle().strokeBorder(Color.white.opacity(0.5), lineWidth: line))
             .frame(width: size, height: size)
-            .scaleEffect(1 + (reach - 1) * progress)
-            .opacity(Double((1 - progress) * min(progress * 10, 1)))
+            .scaleEffect(scale)
+            .opacity(alpha)
             .allowsHitTesting(false)
     }
 }

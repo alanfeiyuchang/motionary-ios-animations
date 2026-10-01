@@ -290,14 +290,17 @@ private struct ButtonLiquidBubbles: View {
         Canvas { context, size in
             guard active else { return }
             for index in 0..<9 {
-                let seed = Double(index) * 0.618
-                let speed = 0.5 + 0.35 * (seed - seed.rounded(.down))
-                let cycle = time * speed + seed * 3
-                let rise = cycle - cycle.rounded(.down)
-                let x = size.width * CGFloat(0.08 + 0.84 * ((seed * 7.3) - (seed * 7.3).rounded(.down)))
-                    + CGFloat(sin(time * 3 + seed * 9)) * 3
-                let y = size.height * CGFloat(1.05 - rise * 1.1)
-                let radius = CGFloat(1.4 + 1.8 * ((seed * 3.7) - (seed * 3.7).rounded(.down)))
+                let seed: Double = Double(index) * 0.618
+                let speed: Double = 0.5 + 0.35 * (seed - seed.rounded(.down))
+                let cycle: Double = time * speed + seed * 3
+                let rise: Double = cycle - cycle.rounded(.down)
+                let column: Double = seed * 7.3
+                let columnFraction: Double = column - column.rounded(.down)
+                let sway: Double = sin(time * 3 + seed * 9) * 3
+                let x: CGFloat = size.width * CGFloat(0.08 + 0.84 * columnFraction) + CGFloat(sway)
+                let y: CGFloat = size.height * CGFloat(1.05 - rise * 1.1)
+                let grain: Double = seed * 3.7
+                let radius: CGFloat = CGFloat(1.4 + 1.8 * (grain - grain.rounded(.down)))
                 context.fill(
                     Path(ellipseIn: CGRect(x: x - radius, y: y - radius, width: radius * 2, height: radius * 2)),
                     with: .color(Color.white.opacity(0.32 * (1 - rise * 0.5)))
