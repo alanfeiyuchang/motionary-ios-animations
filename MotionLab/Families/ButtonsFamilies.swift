@@ -70,6 +70,9 @@ enum ButtonsFamilies {
         "buttons.label-roll": "buttons.press",
         "buttons.squircle-morph": "buttons.press",
         "buttons.keycap": "buttons.press",
+        "buttons.string-border": "buttons.press",
+        "buttons.icon-kick": "buttons.press",
+        "buttons.lit-toggle": "buttons.press",
         // Finger-aware
         "buttons.magnetic": "buttons.pointer",
         "buttons.spotlight": "buttons.pointer",
@@ -78,6 +81,8 @@ enum ButtonsFamilies {
         "buttons.elastic-blob": "buttons.pointer",
         "buttons.gravity-dots": "buttons.pointer",
         "buttons.specular-glass": "buttons.pointer",
+        "buttons.fluid-gradient": "buttons.pointer",
+        "buttons.sticky-label": "buttons.pointer",
         // Glow & shimmer
         "buttons.shimmer": "buttons.glow",
         "buttons.glow-border": "buttons.glow",
@@ -85,6 +90,8 @@ enum ButtonsFamilies {
         "buttons.ember-glow": "buttons.glow",
         "buttons.plasma-glass": "buttons.glow",
         "buttons.holo-foil": "buttons.glow",
+        "buttons.comet-border": "buttons.glow",
+        "buttons.mesh-breath": "buttons.glow",
         // Like button
         "buttons.like-burst": "buttons.like",
         "buttons.like-thumb": "buttons.like",
@@ -94,6 +101,7 @@ enum ButtonsFamilies {
         "buttons.like-flip": "buttons.like",
         "buttons.like-double-tap": "buttons.like",
         "buttons.clap-accumulate": "buttons.like",
+        "buttons.emoji-fountain": "buttons.like",
         // State change
         "buttons.add-to-cart": "buttons.state-morph",
         "buttons.follow-morph": "buttons.state-morph",
@@ -103,6 +111,9 @@ enum ButtonsFamilies {
         "buttons.approve-stamp": "buttons.state-morph",
         "buttons.split-confirm": "buttons.state-morph",
         "buttons.particle-dissolve": "buttons.state-morph",
+        "buttons.get-open": "buttons.state-morph",
+        "buttons.send-fly": "buttons.state-morph",
+        "buttons.undo-countdown": "buttons.state-morph",
         // Hold to confirm
         "buttons.hold-to-confirm": "buttons.hold",
         "buttons.hold-ring": "buttons.hold",
@@ -111,6 +122,8 @@ enum ButtonsFamilies {
         "buttons.hold-segments": "buttons.hold",
         "buttons.hold-fuse": "buttons.hold",
         "buttons.hold-liquid": "buttons.hold",
+        "buttons.hold-record": "buttons.hold",
+        "buttons.hold-bloom": "buttons.hold",
         // Expanding actions
         "buttons.expand-actions": "buttons.expand",
         "buttons.gooey-split": "buttons.expand",
@@ -118,5 +131,7 @@ enum ButtonsFamilies {
         "buttons.unfold-menu": "buttons.expand",
         "buttons.orbit-actions": "buttons.expand",
         "buttons.split-dropdown": "buttons.expand",
+        "buttons.button-to-input": "buttons.expand",
+        "buttons.quantity-expand": "buttons.expand",
     ]
 }
