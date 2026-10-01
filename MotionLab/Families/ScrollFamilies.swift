@@ -56,6 +56,9 @@ enum ScrollFamilies {
         "scroll.ring-carousel": "scroll.carousel",
         "scroll.velocity-skew": "scroll.carousel",
         "scroll.zoom-focus": "scroll.carousel",
+        "scroll.deck-paging": "scroll.carousel",
+        "scroll.expanding-strips": "scroll.carousel",
+        "scroll.page-turn": "scroll.carousel",
         // Scroll headers
         "scroll.stretchy-header": "scroll.header",
         "scroll.collapsing-header": "scroll.header",
@@ -65,6 +68,9 @@ enum ScrollFamilies {
         "scroll.profile-header": "scroll.header",
         "scroll.pull-search": "scroll.header",
         "scroll.pinned-zoom": "scroll.header",
+        "scroll.weather-collapse": "scroll.header",
+        "scroll.sticky-tabs-sync": "scroll.header",
+        "scroll.nav-blur-title": "scroll.header",
         // List motion
         "scroll.transition-list": "scroll.list-motion",
         "scroll.parallax-cards": "scroll.list-motion",
@@ -74,6 +80,10 @@ enum ScrollFamilies {
         "scroll.fold-edge": "scroll.list-motion",
         "scroll.fisheye-list": "scroll.list-motion",
         "scroll.text-reveal": "scroll.list-motion",
+        "scroll.riding-avatar": "scroll.list-motion",
+        "scroll.timeline-fill": "scroll.list-motion",
+        "scroll.stack-under-header": "scroll.list-motion",
+        "scroll.mask-reveal": "scroll.list-motion",
         // Wheels & dials
         "scroll.wheel-list": "scroll.wheel",
         "scroll.arc-dial": "scroll.wheel",
@@ -81,6 +91,8 @@ enum ScrollFamilies {
         "scroll.rotary-wheel": "scroll.wheel",
         "scroll.slot-reels": "scroll.wheel",
         "scroll.date-strip": "scroll.wheel",
+        "scroll.spiral-list": "scroll.wheel",
+        "scroll.time-columns": "scroll.wheel",
         // Progress & index
         "scroll.progress-indicator": "scroll.indicator",
         "scroll.index-scrubber": "scroll.indicator",
@@ -88,5 +100,7 @@ enum ScrollFamilies {
         "scroll.chapter-rail": "scroll.indicator",
         "scroll.liquid-scrollbar": "scroll.indicator",
         "scroll.top-fab-ring": "scroll.indicator",
+        "scroll.windowed-dots": "scroll.indicator",
+        "scroll.date-bubble": "scroll.indicator",
     ]
 }
