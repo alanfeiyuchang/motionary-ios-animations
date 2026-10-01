@@ -54,6 +54,9 @@ enum ChartsFamilies {
         "charts.waterfall": "charts.bar",
         "charts.lollipop": "charts.bar",
         "charts.range-brush": "charts.bar",
+        "charts.diverging": "charts.bar",
+        "charts.pyramid": "charts.bar",
+        "charts.bar-drilldown": "charts.bar",
         // Line charts
         "charts.line-draw": "charts.line",
         "charts.scrub-tooltip": "charts.line",
@@ -63,6 +66,10 @@ enum ChartsFamilies {
         "charts.stacked-area": "charts.line",
         "charts.ecg-live": "charts.line",
         "charts.line-compare": "charts.line",
+        "charts.forecast-band": "charts.line",
+        "charts.threshold-split": "charts.line",
+        "charts.legend-focus": "charts.line",
+        "charts.pan-zoom": "charts.line",
         // Rings & gauges
         "charts.donut-explode": "charts.ring",
         "charts.gauge-needle": "charts.ring",
@@ -71,6 +78,8 @@ enum ChartsFamilies {
         "charts.rose-bloom": "charts.ring",
         "charts.radial-bars": "charts.ring",
         "charts.sunburst": "charts.ring",
+        "charts.radial-schedule": "charts.ring",
+        "charts.hemicycle": "charts.ring",
         // Chart morph
         "charts.radar-morph": "charts.morph",
         "charts.donut-to-bars": "charts.morph",
@@ -78,6 +87,9 @@ enum ChartsFamilies {
         "charts.scatter-histogram": "charts.morph",
         "charts.grouped-stacked": "charts.morph",
         "charts.treemap": "charts.morph",
+        "charts.scatter-cluster": "charts.morph",
+        "charts.dot-matrix-morph": "charts.morph",
+        "charts.sankey-flow": "charts.morph",
         // KPIs & heatmaps
         "charts.heatmap-cascade": "charts.kpi",
         "charts.kpi-count-up": "charts.kpi",
@@ -86,5 +98,7 @@ enum ChartsFamilies {
         "charts.waffle-kpi": "charts.kpi",
         "charts.funnel-flow": "charts.kpi",
         "charts.trend-pill": "charts.kpi",
+        "charts.thermometer": "charts.kpi",
+        "charts.leaderboard": "charts.kpi",
     ]
 }
