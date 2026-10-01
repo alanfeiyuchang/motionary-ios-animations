@@ -51,6 +51,7 @@ enum IconsFamilies {
         "icons.ripple-grid": "icons.symbol-effects",
         "icons.draw-on": "icons.symbol-effects",
         "icons.appear-disappear": "icons.symbol-effects",
+        "icons.symbol-chain": "icons.symbol-effects",
         // Ambient icons
         "icons.variable-color": "icons.ambient",
         "icons.wiggle-rotate-breathe": "icons.ambient",
@@ -58,6 +59,7 @@ enum IconsFamilies {
         "icons.radar-ping": "icons.ambient",
         "icons.ai-sparkle": "icons.ambient",
         "icons.live-waveform": "icons.ambient",
+        "icons.clock-tick": "icons.ambient",
         // Glyph morph
         "icons.play-pause": "icons.glyph-morph",
         "icons.hamburger-morph": "icons.glyph-morph",
@@ -67,6 +69,9 @@ enum IconsFamilies {
         "icons.sun-moon": "icons.glyph-morph",
         "icons.eye-blink": "icons.glyph-morph",
         "icons.mute-slash": "icons.glyph-morph",
+        "icons.grid-list": "icons.glyph-morph",
+        "icons.link-break": "icons.glyph-morph",
+        "icons.expand-collapse": "icons.glyph-morph",
         // Status icons
         "icons.checkmark-draw": "icons.status",
         "icons.download": "icons.status",
@@ -75,6 +80,9 @@ enum IconsFamilies {
         "icons.battery-charge": "icons.status",
         "icons.cloud-sync": "icons.status",
         "icons.faceid-scan": "icons.status",
+        "icons.signal-bars": "icons.status",
+        "icons.airdrop-rings": "icons.status",
+        "icons.nfc-tap": "icons.status",
         // Action icons
         "icons.heart-like": "icons.action",
         "icons.bell-ring": "icons.action",
@@ -86,5 +94,11 @@ enum IconsFamilies {
         "icons.mic-record": "icons.action",
         "icons.archive-box": "icons.action",
         "icons.refresh-spin": "icons.action",
+        "icons.copy-duplicate": "icons.action",
+        "icons.double-check": "icons.action",
+        "icons.cart-bounce": "icons.action",
+        "icons.camera-snap": "icons.action",
+        "icons.flag-wave": "icons.action",
+        "icons.gift-open": "icons.action",
     ]
 }
