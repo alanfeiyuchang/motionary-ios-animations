@@ -111,7 +111,7 @@ private struct PayButtonDemo: View {
                 )
                 .frame(width: 38, height: 28)
             VStack(alignment: .leading, spacing: 1) {
-                Text("Visa •••• 4242")
+                Text("Nova •••• 4242")
                     .font(.footnote.weight(.semibold))
                     .lineLimit(1)
                     .fixedSize()
