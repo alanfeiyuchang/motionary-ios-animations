@@ -64,6 +64,10 @@ enum LoadingFamilies {
         "loading.shape-shifter": "loading.spinner",
         "loading.folding-cube": "loading.spinner",
         "loading.hourglass": "loading.spinner",
+        "loading.pendulum-wave": "loading.spinner",
+        "loading.atom-orbit": "loading.spinner",
+        "loading.squash-ball": "loading.spinner",
+        "loading.snake-pixels": "loading.spinner",
         // Dots & pulses
         "loading.dot-bounce": "loading.pulse",
         "loading.audio-wave": "loading.pulse",
@@ -71,6 +75,7 @@ enum LoadingFamilies {
         "loading.square-grid": "loading.pulse",
         "loading.heartbeat": "loading.pulse",
         "loading.voice-orb": "loading.pulse",
+        "loading.ripple-drop": "loading.pulse",
         // Progress bar
         "loading.glow-bar": "loading.progress-bar",
         "loading.story-bars": "loading.progress-bar",
@@ -81,6 +86,9 @@ enum LoadingFamilies {
         "loading.candy-stripes": "loading.progress-bar",
         "loading.stage-loader": "loading.progress-bar",
         "loading.percent-pill": "loading.progress-bar",
+        "loading.milestones": "loading.progress-bar",
+        "loading.buffer-scrub": "loading.progress-bar",
+        "loading.file-queue": "loading.progress-bar",
         // Progress ring
         "loading.progress-ring": "loading.progress-ring",
         "loading.liquid-fill": "loading.progress-ring",
@@ -90,6 +98,8 @@ enum LoadingFamilies {
         "loading.ring-to-check": "loading.progress-ring",
         "loading.dash-flow-ring": "loading.progress-ring",
         "loading.countdown-ring": "loading.progress-ring",
+        "loading.orbit-ring": "loading.progress-ring",
+        "loading.half-gauge": "loading.progress-ring",
         // Loading button
         "loading.load-button": "loading.button",
         "loading.download-button": "loading.button",
@@ -97,6 +107,8 @@ enum LoadingFamilies {
         "loading.dots-button": "loading.button",
         "loading.trace-button": "loading.button",
         "loading.launch-button": "loading.button",
+        "loading.pay-button": "loading.button",
+        "loading.sync-button": "loading.button",
         // Placeholders
         "loading.skeleton-shimmer": "loading.placeholder",
         "loading.blur-up": "loading.placeholder",
@@ -105,5 +117,7 @@ enum LoadingFamilies {
         "loading.mosaic-resolve": "loading.placeholder",
         "loading.stream-in": "loading.placeholder",
         "loading.scan-reveal": "loading.placeholder",
+        "loading.skeleton-resolve": "loading.placeholder",
+        "loading.map-tiles": "loading.placeholder",
     ]
 }
