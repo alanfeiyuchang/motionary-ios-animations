@@ -42,5 +42,17 @@ enum LoadingEffects {
         // Placeholder variations
         .loadingBreathingSkeleton,
         .loadingMosaicResolve,
+        // Round 2
+        .loadingDNAHelix,
+        .loadingShapeShifter,
+        .loadingFoldingCube,
+        .loadingHourglass,
+        .loadingVoiceOrb,
+        .loadingStreamIn,
+        .loadingScanReveal,
+        .loadingStageLoader,
+        .loadingPercentPill,
+        .loadingCountdownRing,
+        .loadingLaunchButton,
     ]
 }

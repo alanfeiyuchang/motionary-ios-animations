@@ -60,12 +60,17 @@ enum LoadingFamilies {
         "loading.gyroscope": "loading.spinner",
         "loading.flip-tile": "loading.spinner",
         "loading.infinity-comet": "loading.spinner",
+        "loading.dna-helix": "loading.spinner",
+        "loading.shape-shifter": "loading.spinner",
+        "loading.folding-cube": "loading.spinner",
+        "loading.hourglass": "loading.spinner",
         // Dots & pulses
         "loading.dot-bounce": "loading.pulse",
         "loading.audio-wave": "loading.pulse",
         "loading.pulse-rings": "loading.pulse",
         "loading.square-grid": "loading.pulse",
         "loading.heartbeat": "loading.pulse",
+        "loading.voice-orb": "loading.pulse",
         // Progress bar
         "loading.glow-bar": "loading.progress-bar",
         "loading.story-bars": "loading.progress-bar",
@@ -74,6 +79,8 @@ enum LoadingFamilies {
         "loading.liquid-bar": "loading.progress-bar",
         "loading.tooltip-bar": "loading.progress-bar",
         "loading.candy-stripes": "loading.progress-bar",
+        "loading.stage-loader": "loading.progress-bar",
+        "loading.percent-pill": "loading.progress-bar",
         // Progress ring
         "loading.progress-ring": "loading.progress-ring",
         "loading.liquid-fill": "loading.progress-ring",
@@ -82,17 +89,21 @@ enum LoadingFamilies {
         "loading.elastic-ring": "loading.progress-ring",
         "loading.ring-to-check": "loading.progress-ring",
         "loading.dash-flow-ring": "loading.progress-ring",
+        "loading.countdown-ring": "loading.progress-ring",
         // Loading button
         "loading.load-button": "loading.button",
         "loading.download-button": "loading.button",
         "loading.fill-button": "loading.button",
         "loading.dots-button": "loading.button",
         "loading.trace-button": "loading.button",
+        "loading.launch-button": "loading.button",
         // Placeholders
         "loading.skeleton-shimmer": "loading.placeholder",
         "loading.blur-up": "loading.placeholder",
         "loading.ai-generating": "loading.placeholder",
         "loading.breathing-skeleton": "loading.placeholder",
         "loading.mosaic-resolve": "loading.placeholder",
+        "loading.stream-in": "loading.placeholder",
+        "loading.scan-reveal": "loading.placeholder",
     ]
 }
