@@ -46,5 +46,24 @@ enum IconEffects {
         .iconsFaceIDScan,
         // Ambient, round 2
         .iconsLiveWaveform,
+        // SF Symbol effects, round 3
+        .iconsSymbolChain,
+        // Action, round 3
+        .iconsCopyDuplicate,
+        .iconsDoubleCheck,
+        .iconsCartBounce,
+        .iconsCameraSnap,
+        .iconsFlagWave,
+        .iconsGiftOpen,
+        // Glyph morph, round 3
+        .iconsGridList,
+        .iconsLinkBreak,
+        .iconsExpandCollapse,
+        // Status, round 3
+        .iconsSignalBars,
+        .iconsAirdropRings,
+        .iconsNfcTap,
+        // Ambient, round 3
+        .iconsClockTick,
     ]
 }
