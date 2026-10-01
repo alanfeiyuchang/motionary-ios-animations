@@ -1,8 +1,8 @@
 /**
  * Helpers shared by the Morph ports (not part of the kit).
  */
-import { MotionConfig, motion, useMotionValueEvent, type MotionValue, type Transition } from "motion/react";
-import { useCallback, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
+import { MotionConfig, animate, motion, useMotionValue, useMotionValueEvent, type MotionValue, type Transition } from "motion/react";
+import { useCallback, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
 import { anim, delayed, elementScale, spring } from "../../kit";
 
 /** Re-renders with a motion value's current number (for SwiftUI `Animatable` bodies computed per frame). */
@@ -139,3 +139,67 @@ export function layoutRect(el: HTMLElement, root: HTMLElement): Rect {
 
 /** UIKit-style projected end of a fling (`predictedEndTranslation`). */
 export const predicted = (translation: number, velocity: number) => translation + velocity * 0.25;
+
+/**
+ * `MorphAnimated` (MorphKit.swift): a number that is animated like `withAnimation { state = x }` and read
+ * per frame, so geometry computed from it keeps the spring's overshoot and survives interruptions.
+ * `const [p, to, mv] = useProgress(0); to(1, spring(0.5, 0.8))`.
+ */
+export function useProgress(initial = 0) {
+  const mv = useMotionValue(initial);
+  const value = useMV(mv);
+  const to = useMemo(() => (target: number, transition: Transition) => animate(mv, target, transition), [mv]);
+  return [value, to, mv] as const;
+}
+
+/** `MorphMath`. */
+export const unit = (x: number) => Math.min(Math.max(x, 0), 1);
+export function smooth(x: number, a: number, b: number) {
+  const t = unit((x - a) / (b - a));
+  return t * t * (3 - 2 * t);
+}
+/** `MorphMath.lerp(CGRect…)`: centre and size are interpolated, sizes never fall below 1. */
+export function lerpRect(a: Rect, b: Rect, t: number): Rect {
+  const w = Math.max(mixN(a.w, b.w, t), 1);
+  const h = Math.max(mixN(a.h, b.h, t), 1);
+  const cx = mixN(a.x + a.w / 2, b.x + b.w / 2, t);
+  const cy = mixN(a.y + a.h / 2, b.y + b.h / 2, t);
+  return { x: cx - w / 2, y: cy - h / 2, w, h };
+}
+export const rectStyle = (r: Rect): CSSProperties => ({ position: "absolute", left: r.x, top: r.y, width: r.w, height: r.h });
+
+/** `.morphScreen(width:height:radius:)`: a framed, clipped demo "screen" with a hairline and a soft shadow. */
+export function morphScreen(width = 316, height = 306, radius = 30): CSSProperties {
+  return {
+    position: "relative",
+    width,
+    height,
+    flexShrink: 0,
+    borderRadius: radius,
+    overflow: "hidden",
+    boxShadow: `inset 0 0 0 1px var(--ml-stroke), 0 10px 18px rgb(0 0 0 / 0.12)`,
+  };
+}
+
+/** `MorphReveal`: content that rises out of a blur a moment after it is inserted. */
+export function MorphReveal({ delay = 0, rise = 10, children, style }: { delay?: number; rise?: number; children?: ReactNode; style?: CSSProperties }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: rise, filter: "blur(5px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={delayed(spring(0.45, 0.86), delay)}
+      style={style}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/** The demo column: `VStack(spacing:) { … }.frame(maxWidth: .infinity, maxHeight: .infinity)`. */
+export function Column({ gap = 10, children, style }: { gap?: number; children?: ReactNode; style?: CSSProperties }) {
+  return (
+    <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap, ...style }}>
+      {children}
+    </div>
+  );
+}

@@ -66,9 +66,10 @@ export class MeshRenderer {
   private pos = new Float32Array(0);
   private col = new Float32Array(0);
   /** Sub-quads per patch side. */
-  private readonly sub = 18;
+  private readonly sub: number;
 
-  constructor(private canvas: HTMLCanvasElement) {
+  constructor(private canvas: HTMLCanvasElement, sub = 18) {
+    this.sub = sub;
     this.gl = canvas.getContext("webgl", { antialias: false, premultipliedAlpha: true, alpha: true });
     const gl = this.gl;
     if (!gl) return;
