@@ -43,6 +43,21 @@ enum ChartEffects {
         .chartsFunnelFlow,
         .chartsTrendPill,
         .chartsTreemap,
+        // Round 2, part B
+        .chartsDiverging,
+        .chartsPyramid,
+        .chartsBarDrilldown,
+        .chartsForecastBand,
+        .chartsThresholdSplit,
+        .chartsLegendFocus,
+        .chartsPanZoom,
+        .chartsRadialSchedule,
+        .chartsHemicycle,
+        .chartsThermometer,
+        .chartsLeaderboard,
+        .chartsScatterCluster,
+        .chartsDotMatrixMorph,
+        .chartsSankeyFlow,
     ]
 }
 
