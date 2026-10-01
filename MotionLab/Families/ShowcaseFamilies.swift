@@ -2,7 +2,7 @@ import Foundation
 
 /// Families (variation groups) of `EffectCategory.showcase`.
 ///
-/// To add a variation: append the effect to its category list (`ShowcaseSportEffects.all`, …), then add one
+/// To add a variation: append the effect to its category list (`ShowcaseSportEffects.all`, `ShowcaseStudioEffects.all`, …), then add one
 /// `"<effect id>": "<family id>",` line to `membership` below. Each effect id may appear only once
 /// (a duplicate dictionary key traps at launch). See docs/FAMILIES.md.
 enum ShowcaseFamilies {
@@ -58,12 +58,16 @@ enum ShowcaseFamilies {
         "showcase.heart-zone": "showcase.chart-widgets",
         "showcase.finance-card": "showcase.chart-widgets",
         "showcase.sleep-timeline": "showcase.chart-widgets",
+        "showcase.sun-arc": "showcase.chart-widgets",
+        "showcase.tide-pulse": "showcase.chart-widgets",
         // Live stat cards
         "showcase.lift-status": "showcase.live-stats",
         "showcase.run-summary": "showcase.live-stats",
         "showcase.weather-widget": "showcase.live-stats",
         "showcase.flip-clock": "showcase.live-stats",
         "showcase.ev-charge": "showcase.live-stats",
+        "showcase.compass-heading": "showcase.live-stats",
+        "showcase.reaction-time": "showcase.live-stats",
         // Photo & media cards
         "showcase.board-card": "showcase.media-cards",
         "showcase.photo-play": "showcase.media-cards",
@@ -72,23 +76,30 @@ enum ShowcaseFamilies {
         "showcase.destination-carousel": "showcase.media-cards",
         "showcase.polaroid-fan": "showcase.media-cards",
         "showcase.now-playing": "showcase.media-cards",
+        "showcase.vinyl-scrub": "showcase.media-cards",
+        "showcase.voice-memo": "showcase.media-cards",
         // Pickers, sliders & checklists
         "showcase.slide-to-start": "showcase.controls",
         "showcase.altitude-ruler": "showcase.controls",
         "showcase.gear-checklist": "showcase.controls",
         "showcase.trip-chips": "showcase.controls",
         "showcase.date-range": "showcase.controls",
+        "showcase.focus-timer": "showcase.controls",
+        "showcase.dimmer-lamp": "showcase.controls",
         // Routes & timelines
         "showcase.best-line": "showcase.routes",
         "showcase.flight-path": "showcase.routes",
         "showcase.pin-route": "showcase.routes",
         "showcase.itinerary": "showcase.routes",
         "showcase.transit-line": "showcase.routes",
+        "showcase.elevation-profile": "showcase.routes",
+        "showcase.parcel-tracker": "showcase.routes",
         // Moments & CTAs
         "showcase.go-countdown": "showcase.moments",
         "showcase.get-started": "showcase.moments",
         "showcase.boarding-pass": "showcase.moments",
         "showcase.save-burst": "showcase.moments",
         "showcase.summit-badge": "showcase.moments",
+        "showcase.breath-flower": "showcase.moments",
     ]
 }
