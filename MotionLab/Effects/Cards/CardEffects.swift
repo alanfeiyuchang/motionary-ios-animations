@@ -39,5 +39,20 @@ enum CardEffects {
         .cardsNumberReveal,
         .cardsPlanSwitch,
         .cardsGlassStack,
+        // Round 2, part B
+        .cardsBendFlex,
+        .cardsLevitate,
+        .cardsPrismFaces,
+        .cardsFoldHalf,
+        .cardsSlideDoor,
+        .cardsCrumpleDismiss,
+        .cardsStoryTap,
+        .cardsIsometricExplode,
+        .cardsScatterGather,
+        .cardsReceiptPrint,
+        .cardsSplitReveal,
+        .cardsCollapseChip,
+        .cardsStampCard,
+        .cardsGiftUnwrap,
     ]
 }
