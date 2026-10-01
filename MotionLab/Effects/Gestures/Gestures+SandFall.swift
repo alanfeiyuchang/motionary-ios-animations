@@ -304,8 +304,12 @@ private struct SandCanvas: View {
     let tick: Date
 
     /// Two tones per hue: index = hue × 2 + tone.
-    private static let palette: [Color] = (0..<(Sand.hues * 2)).map {
-        GestureRGB.hue(Double($0 / 2) / Double(Sand.hues), saturation: $0 % 2 == 0 ? 0.52 : 0.64, brightness: $0 % 2 == 0 ? 1.0 : 0.86).color()
+    private static let palette: [Color] = (0..<(Sand.hues * 2)).map { (index: Int) -> Color in
+        let light: Bool = index % 2 == 0
+        let hue: Double = Double(index / 2) / Double(Sand.hues)
+        let saturation: Double = light ? 0.52 : 0.64
+        let brightness: Double = light ? 1.0 : 0.86
+        return GestureRGB.hue(hue, saturation: saturation, brightness: brightness).color()
     }
 
     var body: some View {
