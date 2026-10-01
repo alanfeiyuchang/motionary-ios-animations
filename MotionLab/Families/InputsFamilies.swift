@@ -76,6 +76,7 @@ enum InputsFamilies {
         "inputs.flood-toggle": "inputs.toggle",
         "inputs.glass-toggle": "inputs.toggle",
         "inputs.lever-toggle": "inputs.toggle",
+        "inputs.power-toggle": "inputs.toggle",
         // Slider
         "inputs.velocity-slider": "inputs.slider",
         "inputs.elastic-slider": "inputs.slider",
@@ -87,6 +88,8 @@ enum InputsFamilies {
         "inputs.grow-scrubber": "inputs.slider",
         "inputs.volume-pill": "inputs.slider",
         "inputs.hue-slider": "inputs.slider",
+        "inputs.bend-slider": "inputs.slider",
+        "inputs.center-slider": "inputs.slider",
         // Dials & wheels
         "inputs.dial-knob": "inputs.dial",
         "inputs.wheel-picker": "inputs.dial",
@@ -95,6 +98,8 @@ enum InputsFamilies {
         "inputs.wind-up-timer": "inputs.dial",
         "inputs.clock-picker": "inputs.dial",
         "inputs.safe-dial": "inputs.dial",
+        "inputs.color-wheel": "inputs.dial",
+        "inputs.crown-scroll": "inputs.dial",
         // Text field
         "inputs.floating-label": "inputs.text-field",
         "inputs.password-strength": "inputs.text-field",
@@ -103,6 +108,9 @@ enum InputsFamilies {
         "inputs.token-field": "inputs.text-field",
         "inputs.card-input": "inputs.text-field",
         "inputs.ai-composer": "inputs.text-field",
+        "inputs.counter-ring": "inputs.text-field",
+        "inputs.voice-field": "inputs.text-field",
+        "inputs.magic-fill": "inputs.text-field",
         // Code & passcode
         "inputs.otp-code": "inputs.code-entry",
         "inputs.passcode-pad": "inputs.code-entry",
@@ -110,6 +118,7 @@ enum InputsFamilies {
         "inputs.slot-reel-code": "inputs.code-entry",
         "inputs.secure-flip-code": "inputs.code-entry",
         "inputs.pattern-lock": "inputs.code-entry",
+        "inputs.paste-code": "inputs.code-entry",
         // Stepper
         "inputs.rolling-stepper": "inputs.stepper",
         "inputs.expanding-stepper": "inputs.stepper",
@@ -117,12 +126,14 @@ enum InputsFamilies {
         "inputs.drag-stepper": "inputs.stepper",
         "inputs.delta-stepper": "inputs.stepper",
         "inputs.gooey-stepper": "inputs.stepper",
+        "inputs.cart-stepper": "inputs.stepper",
         // Rating
         "inputs.star-rating": "inputs.rating",
         "inputs.emoji-face-rating": "inputs.rating",
         "inputs.fill-rating": "inputs.rating",
         "inputs.thumbs-rating": "inputs.rating",
         "inputs.nps-scale": "inputs.rating",
+        "inputs.reaction-slider": "inputs.rating",
         // Checkboxes & chips
         "inputs.checkbox-draw": "inputs.selection",
         "inputs.chip-select": "inputs.selection",
@@ -130,5 +141,8 @@ enum InputsFamilies {
         "inputs.radio-travel": "inputs.selection",
         "inputs.todo-check": "inputs.selection",
         "inputs.dropdown-roll": "inputs.selection",
+        "inputs.seat-picker": "inputs.selection",
+        "inputs.bubble-picker": "inputs.selection",
+        "inputs.radio-cards": "inputs.selection",
     ]
 }
