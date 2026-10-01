@@ -40,6 +40,21 @@ enum ShaderEffects {
         .shaderPrism,
         .shaderLiquidChrome,
         .shaderNebula,
+        // Third batch
+        .shaderUnderwater,
+        .shaderWindSmear,
+        .shaderCrumple,
+        .shaderTouchTrail,
+        .shaderDisplaceFade,
+        .shaderGlitchCut,
+        .shaderCurlFlip,
+        .shaderSuper8,
+        .shaderNightVision,
+        .shaderSketchEdges,
+        .shaderRainGlass,
+        .shaderGlassBlocks,
+        .shaderFire,
+        .shaderLightningArcs,
     ]
 }
 
