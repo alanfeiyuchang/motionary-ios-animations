@@ -50,5 +50,20 @@ enum FeedbackEffects {
         .feedbackSilentHUD,
         .feedbackAutosavePulse,
         .feedbackThreadRefresh,
+        // Round 2, part B
+        .feedbackSwipeToast,
+        .feedbackExpandToast,
+        .feedbackNotchDrop,
+        .feedbackOrderBox,
+        .feedbackAllDoneList,
+        .feedbackStickerSlap,
+        .feedbackRetryCountdown,
+        .feedbackEmptyState,
+        .feedbackNewMessagesPill,
+        .feedbackLiveBadge,
+        .feedbackScreenshotThumb,
+        .feedbackPermissionDialog,
+        .feedbackActionSheet,
+        .feedbackRocketRefresh,
     ]
 }

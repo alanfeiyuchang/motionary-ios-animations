@@ -24,10 +24,10 @@ extension Effect {
             "“向 Mia 支付 ¥168.00”卡片下方是一枚 200 × 50 pt 的“支付”胶囊。点击后，胶囊本身化作成功标记：先收缩成 50 pt 的旋转圆，0.7 秒后转绿，以弹跳弹簧（响应 0.45 秒、阻尼 0.5）膨胀为 88 pt 圆盘，同时上移接替缩小退场的卡片。十六颗绿、薄荷、琥珀色火花从圆盘边缘呈扇形向上喷出，在重力下划出抛物线回落，0.9 秒内边落边缩小淡出。200 毫秒后，6 pt 白色对勾以 0.3 秒缓出写出，伴随成功触感。从按钮到徽章始终是同一个物体，热闹而不吵。"
         ),
         implementation: L(
-            "One Capsule's frame animates 200 × 50 → 50 × 50 → 88 × 88 and its offset lifts it into the card's slot, so the button morphs rather than being replaced; a keyframeAnimator keyed on a burst counter feeds a linear time value to particles placed with projectile motion (v·t + ½·g·t²).",
-            "同一个 Capsule 的尺寸按 200 × 50 → 50 × 50 → 88 × 88 动画，并通过 offset 上移到卡片位置，因此按钮是在形变而非被替换；以迸发计数为触发器的 keyframeAnimator 输出线性时间值，粒子按抛体公式（v·t + ½·g·t²）定位。"
+            "One Capsule's frame animates 200 × 50 → 50 × 50 → 88 × 88 and its offset lifts it into the card's slot, so the button morphs rather than being replaced; a TimelineView clock measures the time since the burst and places each particle with projectile motion (v·t + ½·g·t²).",
+            "同一个 Capsule 的尺寸按 200 × 50 → 50 × 50 → 88 × 88 动画，并通过 offset 上移到卡片位置，因此按钮是在形变而非被替换；TimelineView 时钟计算迸发后经过的时间，粒子按抛体公式（v·t + ½·g·t²）定位。"
         ),
-        apis: ["keyframeAnimator(initialValue:trigger:)", "Capsule", "trim(from:to:)", "spring(response:dampingFraction:)"],
+        apis: ["TimelineView(.animation(minimumInterval:paused:))", "Capsule", "trim(from:to:)", "spring(response:dampingFraction:)"],
         tags: ["success", "sparks", "burst", "payment", "morph", "成功", "火花", "支付"],
         params: [
             .slider("damping", L("Pop damping", "弹出阻尼"), 0.3...1.0, default: 0.5),
@@ -48,7 +48,8 @@ private enum SparkPhase: Equatable {
 private struct SparkBurstDemo: View {
     let ctx: DemoContext
     @State private var phase: SparkPhase = .idle
-    @State private var bursts = 0
+    /// When the sparks were launched; `nil` while none are in the air (the fountain's clock is paused then).
+    @State private var burstStart: Date?
     @State private var token = 0
 
     var body: some View {
@@ -91,15 +92,7 @@ private struct SparkBurstDemo: View {
     private func morphButton(zh: Bool) -> some View {
         Button(action: pay) {
             ZStack {
-                SparkFountain(count: max(ctx.int("count"), 6), power: ctx.cg("reach"))
-                    .keyframeAnimator(initialValue: CGFloat(0), trigger: bursts) { content, spark in
-                        content.environment(\.sparkProgress, spark)
-                    } keyframes: { _ in
-                        KeyframeTrack(\.self) {
-                            MoveKeyframe(0)
-                            LinearKeyframe(1, duration: 0.9)
-                        }
-                    }
+                SparkFountain(count: max(ctx.int("count"), 6), power: ctx.cg("reach"), start: burstStart, preview: ctx.isPreview)
                 SparkMorphShape(phase: phase)
                 buttonContent(zh: zh)
                 SuccessCheckShape()
@@ -152,12 +145,16 @@ private struct SparkBurstDemo: View {
             try? await Task.sleep(for: .seconds(0.7))
             guard token == current else { return }
             withAnimation(.spring(response: 0.45, dampingFraction: ctx["damping"])) { phase = .paid }
-            bursts += 1
+            let launched = Date()
+            burstStart = launched
             try? await Task.sleep(for: .seconds(0.2))
             guard token == current else { return }
             if buzz { Haptics.success() }
-            guard !live else { return }
-            try? await Task.sleep(for: .seconds(2.4))
+            try? await Task.sleep(for: .seconds(SparkFountain.life))
+            // Park the fountain's clock once this burst has faded (a newer burst keeps its own start).
+            if burstStart == launched { burstStart = nil }
+            guard token == current, !live else { return }
+            try? await Task.sleep(for: .seconds(2.4 - SparkFountain.life))
             guard token == current else { return }
             withAnimation(.smooth(duration: 0.35)) { phase = .idle }
         }
@@ -190,42 +187,41 @@ private struct SparkMorphShape: View {
     }
 }
 
-private struct SparkProgressKey: EnvironmentKey {
-    static let defaultValue: CGFloat = 0
-}
-
-private extension EnvironmentValues {
-    var sparkProgress: CGFloat {
-        get { self[SparkProgressKey.self] }
-        set { self[SparkProgressKey.self] = newValue }
-    }
-}
-
 /// Particles launched in an upward fan from the disc's rim, then pulled down by gravity.
+/// A `TimelineView` clock measures the time since `start`; a value pushed through the environment by a
+/// `keyframeAnimator` never reached the particles, so the fountain rendered nothing.
 private struct SparkFountain: View {
     let count: Int
     let power: CGFloat
-    @Environment(\.sparkProgress) private var spark
+    let start: Date?
+    let preview: Bool
+
+    /// Seconds a burst stays in the air.
+    static let life: Double = 0.9
 
     private let colors: [Color] = [Palette.green, Palette.mint, Palette.amber]
 
     var body: some View {
-        let live: Bool = spark > 0.001 && spark < 0.999
-        ZStack {
-            ForEach(0..<count, id: \.self) { index in
-                particle(index)
+        TimelineView(.animation(minimumInterval: MotionFrameRate.interval(preview: preview), paused: start == nil)) { timeline in
+            let elapsed: Double = start.map { timeline.date.timeIntervalSince($0) } ?? -1
+            let t: Double = elapsed / Self.life
+            let live: Bool = t > 0 && t < 1
+            ZStack {
+                if live {
+                    ForEach(0..<count, id: \.self) { index in
+                        particle(index, t: t)
+                    }
+                }
             }
         }
-        .opacity(live ? 1 : 0)
         .allowsHitTesting(false)
     }
 
-    private func particle(_ index: Int) -> some View {
+    private func particle(_ index: Int, t: Double) -> some View {
         let fan: Double = count > 1 ? Double(index) / Double(count - 1) - 0.5 : 0
         let angle: Double = -Double.pi / 2 + fan * 2.3
         let jitter: Double = 0.72 + 0.28 * abs(sin(Double(index) * 12.9898))
         let speed: Double = (150 + Double(power) * 2) * jitter
-        let t: Double = Double(spark)
         let x: Double = cos(angle) * (30 + speed * t)
         let y: Double = sin(angle) * (30 + speed * t) + 0.5 * 380 * t * t
         let size: CGFloat = (index % 2 == 0 ? 7 : 5) * CGFloat(1 - 0.6 * t)

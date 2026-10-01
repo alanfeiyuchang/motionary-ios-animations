@@ -62,6 +62,9 @@ enum FeedbackFamilies {
         "feedback.morph-toast": "feedback.toast",
         "feedback.progress-toast": "feedback.toast",
         "feedback.achievement-banner": "feedback.toast",
+        "feedback.swipe-toast": "feedback.toast",
+        "feedback.expand-toast": "feedback.toast",
+        "feedback.notch-drop": "feedback.toast",
         // Success
         "feedback.success-check": "feedback.success",
         "feedback.confetti": "feedback.success",
@@ -71,6 +74,9 @@ enum FeedbackFamilies {
         "feedback.payment-done": "feedback.success",
         "feedback.fireworks": "feedback.success",
         "feedback.coin-reward": "feedback.success",
+        "feedback.order-box": "feedback.success",
+        "feedback.all-done-list": "feedback.success",
+        "feedback.sticker-slap": "feedback.success",
         // Errors & validation
         "feedback.error-shake": "feedback.error",
         "feedback.inline-validation": "feedback.error",
@@ -78,6 +84,8 @@ enum FeedbackFamilies {
         "feedback.limit-bounce": "feedback.error",
         "feedback.faceid-fail": "feedback.error",
         "feedback.card-declined": "feedback.error",
+        "feedback.retry-countdown": "feedback.error",
+        "feedback.empty-state": "feedback.error",
         // Badges & reactions
         "feedback.badge-bounce": "feedback.badge",
         "feedback.reaction-picker": "feedback.badge",
@@ -86,6 +94,8 @@ enum FeedbackFamilies {
         "feedback.floating-hearts": "feedback.badge",
         "feedback.counter-badge": "feedback.badge",
         "feedback.typing-bubble": "feedback.badge",
+        "feedback.new-messages-pill": "feedback.badge",
+        "feedback.live-badge": "feedback.badge",
         // Alerts & overlays
         "feedback.alert-pop": "feedback.overlay",
         "feedback.coach-spotlight": "feedback.overlay",
@@ -94,6 +104,9 @@ enum FeedbackFamilies {
         "feedback.drop-alert": "feedback.overlay",
         "feedback.silent-hud": "feedback.overlay",
         "feedback.autosave-pulse": "feedback.overlay",
+        "feedback.screenshot-thumb": "feedback.overlay",
+        "feedback.permission-dialog": "feedback.overlay",
+        "feedback.action-sheet": "feedback.overlay",
         // Pull to refresh
         "feedback.pull-refresh": "feedback.refresh",
         "feedback.goo-refresh": "feedback.refresh",
@@ -101,5 +114,6 @@ enum FeedbackFamilies {
         "feedback.letter-refresh": "feedback.refresh",
         "feedback.dots-refresh": "feedback.refresh",
         "feedback.thread-refresh": "feedback.refresh",
+        "feedback.rocket-refresh": "feedback.refresh",
     ]
 }
