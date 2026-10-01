@@ -55,6 +55,9 @@ enum BackgroundsFamilies {
         "backgrounds.wave-band": "backgrounds.gradient",
         "backgrounds.godrays": "backgrounds.gradient",
         "backgrounds.holo-foil": "backgrounds.gradient",
+        "backgrounds.silk-folds": "backgrounds.gradient",
+        "backgrounds.sunset-horizon": "backgrounds.gradient",
+        "backgrounds.pearl": "backgrounds.gradient",
         // Particle fields
         "backgrounds.particle-repulsion": "backgrounds.particles",
         "backgrounds.fireflies": "backgrounds.particles",
@@ -64,6 +67,9 @@ enum BackgroundsFamilies {
         "backgrounds.galaxy": "backgrounds.particles",
         "backgrounds.boids": "backgrounds.particles",
         "backgrounds.matrix-rain": "backgrounds.particles",
+        "backgrounds.embers": "backgrounds.particles",
+        "backgrounds.magnetic-lines": "backgrounds.particles",
+        "backgrounds.shape-swarm": "backgrounds.particles",
         // Liquid & blobs
         "backgrounds.metaballs": "backgrounds.liquid",
         "backgrounds.glow-orb": "backgrounds.liquid",
@@ -73,6 +79,8 @@ enum BackgroundsFamilies {
         "backgrounds.marbling": "backgrounds.liquid",
         "backgrounds.bubbles": "backgrounds.liquid",
         "backgrounds.ferrofluid": "backgrounds.liquid",
+        "backgrounds.pond-ripples": "backgrounds.liquid",
+        "backgrounds.paint-pour": "backgrounds.liquid",
         // Weather
         "backgrounds.rain": "backgrounds.weather",
         "backgrounds.snowfall": "backgrounds.weather",
@@ -81,6 +89,8 @@ enum BackgroundsFamilies {
         "backgrounds.autumn-wind": "backgrounds.weather",
         "backgrounds.thunderstorm": "backgrounds.weather",
         "backgrounds.shooting-stars": "backgrounds.weather",
+        "backgrounds.sakura": "backgrounds.weather",
+        "backgrounds.sun-clouds": "backgrounds.weather",
         // Waves, grids & warp
         "backgrounds.starfield-warp": "backgrounds.waves-grids",
         "backgrounds.halftone-flow": "backgrounds.waves-grids",
@@ -89,5 +99,9 @@ enum BackgroundsFamilies {
         "backgrounds.shockwave-grid": "backgrounds.waves-grids",
         "backgrounds.dot-wave": "backgrounds.waves-grids",
         "backgrounds.topo-contours": "backgrounds.waves-grids",
+        "backgrounds.hex-pulse": "backgrounds.waves-grids",
+        "backgrounds.iso-cubes": "backgrounds.waves-grids",
+        "backgrounds.ridge-lines": "backgrounds.waves-grids",
+        "backgrounds.circuit-traces": "backgrounds.waves-grids",
     ]
 }
