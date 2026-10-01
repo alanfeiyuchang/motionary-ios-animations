@@ -38,5 +38,17 @@ enum GestureEffects {
         .gesturesNotchSlide,
         .gesturesArcSlide,
         .gesturesPullCord,
+        // Round 2
+        .gesturesJoystick,
+        .gesturesStickyGoo,
+        .gesturesPaperToss,
+        .gesturesSpinWheel,
+        .gesturesZoomTimeline,
+        .gesturesPullToCreate,
+        .gesturesKanbanDrag,
+        .gesturesBallPit,
+        .gesturesSoftBody,
+        .gesturesClothGrid,
+        .gesturesSwipeUpUnlock,
     ]
 }
