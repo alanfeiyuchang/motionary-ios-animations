@@ -53,6 +53,8 @@ enum TextFamilies {
         "text.gravity-digits": "text.number",
         "text.count-up": "text.number",
         "text.seven-segment": "text.number",
+        "text.price-tick": "text.number",
+        "text.countdown": "text.number",
         // Text reveal
         "text.blur-reveal": "text.reveal",
         "text.typewriter": "text.reveal",
@@ -62,23 +64,32 @@ enum TextFamilies {
         "text.elastic-letters": "text.reveal",
         "text.light-sweep": "text.reveal",
         "text.tracking-in": "text.reveal",
+        "text.ai-stream": "text.reveal",
+        "text.handwriting": "text.reveal",
+        "text.liquid-fill": "text.reveal",
         // Kinetic type
         "text.wave": "text.kinetic",
         "text.circular-badge": "text.kinetic",
         "text.variable-weight": "text.kinetic",
         "text.spring-chain": "text.kinetic",
         "text.squash-hop": "text.kinetic",
+        "text.path-flow": "text.kinetic",
+        "text.magnet-letters": "text.kinetic",
         // Light & emphasis
         "text.shimmer": "text.emphasis",
         "text.highlighter": "text.emphasis",
         "text.synced-lyrics": "text.emphasis",
         "text.scribble-circle": "text.emphasis",
         "text.neon-sign": "text.emphasis",
+        "text.gradient-flow": "text.emphasis",
+        "text.squiggle-underline": "text.emphasis",
+        "text.spotlight-mask": "text.emphasis",
         // Rotating & ticker
         "text.rotating-words": "text.ticker",
         "text.marquee": "text.ticker",
         "text.news-ticker": "text.ticker",
         "text.word-drum": "text.ticker",
         "text.type-cycle": "text.ticker",
+        "text.letter-morph": "text.ticker",
     ]
 }
