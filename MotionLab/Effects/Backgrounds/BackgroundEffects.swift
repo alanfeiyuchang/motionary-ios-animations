@@ -29,5 +29,17 @@ enum BackgroundEffects {
         .backgroundsWaveBand,
         .backgroundsConstellation,
         .backgroundsFlowField,
+        .backgroundsGodrays,
+        .backgroundsHoloFoil,
+        .backgroundsMarbling,
+        .backgroundsBubbles,
+        .backgroundsFerrofluid,
+        .backgroundsGalaxy,
+        .backgroundsBoids,
+        .backgroundsMatrixRain,
+        .backgroundsDotWave,
+        .backgroundsTopoContours,
+        .backgroundsThunderstorm,
+        .backgroundsShootingStars,
     ]
 }

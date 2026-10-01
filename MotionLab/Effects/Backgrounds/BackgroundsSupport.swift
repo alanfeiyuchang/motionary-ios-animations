@@ -91,6 +91,24 @@ extension View {
     }
 }
 
+extension View {
+    /// Bottom hint on a dark chip, for backgrounds too busy or too bright for plain caption text. Hidden in previews.
+    func backgroundsChipHint(_ text: LocalizedText, _ ctx: DemoContext) -> some View {
+        overlay(alignment: .bottom) {
+            if !ctx.isPreview {
+                Text(text, ctx.language)
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.white.opacity(0.92))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(.black.opacity(0.5), in: Capsule())
+                    .padding(.bottom, 12)
+                    .allowsHitTesting(false)
+            }
+        }
+    }
+}
+
 /// Stage-wide touch tracking for ambient backgrounds that never traps the page's vertical scroll:
 /// the drag is attached *simultaneously*, so the page's scroll view always keeps vertical swipes, and it only
 /// engages after 10 pt of mostly horizontal travel (then follows the finger in any direction).
@@ -153,5 +171,54 @@ extension View {
     /// See `BackgroundsTouchModifier`: horizontal-first drag plus tap-to-poke, scroll-friendly.
     func backgroundsTouch(onChanged: @escaping (CGPoint) -> Void, onEnded: @escaping () -> Void = {}) -> some View {
         modifier(BackgroundsTouchModifier(onChanged: onChanged, onEnded: onEnded))
+    }
+}
+
+/// Small deterministic generator (SplitMix64) for demos that seed a scene once: the same seed always
+/// gives the same layout, so stills and previews look alike.
+struct BackgroundRNG: RandomNumberGenerator {
+    private var state: UInt64
+
+    init(seed: UInt64) {
+        state = seed &+ 0x9E3779B97F4A7C15
+    }
+
+    mutating func next() -> UInt64 {
+        state &+= 0x9E3779B97F4A7C15
+        var z = state
+        z = (z ^ (z >> 30)) &* 0xBF58476D1CE4E5B9
+        z = (z ^ (z >> 27)) &* 0x94D049BB133111EB
+        return z ^ (z >> 31)
+    }
+
+    /// Uniform value in 0..<1.
+    mutating func unit() -> Double {
+        Double(next() >> 11) / Double(1 << 53)
+    }
+
+    /// Uniform value in `range`.
+    mutating func range(_ range: ClosedRange<Double>) -> Double {
+        range.lowerBound + (range.upperBound - range.lowerBound) * unit()
+    }
+}
+
+extension BackgroundMath {
+    /// Hermite smoothstep of `x` between `a` and `b`, clamped to 0...1.
+    static func smoothstep(_ a: Double, _ b: Double, _ x: Double) -> Double {
+        guard a != b else { return x < a ? 0 : 1 }
+        let u = min(max((x - a) / (b - a), 0), 1)
+        return u * u * (3 - 2 * u)
+    }
+
+    /// A 2D spring step (semi-implicit Euler): moves `value` toward `target` with the given stiffness
+    /// and damping ratio, returning the new value and velocity.
+    static func spring(
+        value: CGPoint, velocity: CGVector, target: CGPoint, stiffness: CGFloat, damping: CGFloat, dt: CGFloat
+    ) -> (CGPoint, CGVector) {
+        let c = 2 * stiffness.squareRoot() * damping
+        var v = velocity
+        v.dx += (stiffness * (target.x - value.x) - c * v.dx) * dt
+        v.dy += (stiffness * (target.y - value.y) - c * v.dy) * dt
+        return (CGPoint(x: value.x + v.dx * dt, y: value.y + v.dy * dt), v)
     }
 }
