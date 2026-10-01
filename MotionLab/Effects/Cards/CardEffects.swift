@@ -27,5 +27,17 @@ enum CardEffects {
         .cardsScrubFlip,
         .cardsStackingScroll,
         .cardsCascadeSpread,
+        // Round 2
+        .cardsStickerPeel,
+        .cardsSpotlightBorder,
+        .cardsBookOpen,
+        .cardsSwapPlaces,
+        .cardsRolodex,
+        .cardsTimeMachine,
+        .cardsDealHand,
+        .cardsWidgetResize,
+        .cardsNumberReveal,
+        .cardsPlanSwitch,
+        .cardsGlassStack,
     ]
 }
