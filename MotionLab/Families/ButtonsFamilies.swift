@@ -68,18 +68,23 @@ enum ButtonsFamilies {
         "buttons.echo-press": "buttons.press",
         "buttons.stack-press": "buttons.press",
         "buttons.label-roll": "buttons.press",
+        "buttons.squircle-morph": "buttons.press",
+        "buttons.keycap": "buttons.press",
         // Finger-aware
         "buttons.magnetic": "buttons.pointer",
         "buttons.spotlight": "buttons.pointer",
         "buttons.repel-letters": "buttons.pointer",
         "buttons.parallax-tilt": "buttons.pointer",
         "buttons.elastic-blob": "buttons.pointer",
+        "buttons.gravity-dots": "buttons.pointer",
+        "buttons.specular-glass": "buttons.pointer",
         // Glow & shimmer
         "buttons.shimmer": "buttons.glow",
         "buttons.glow-border": "buttons.glow",
         "buttons.neon-breath": "buttons.glow",
         "buttons.ember-glow": "buttons.glow",
         "buttons.plasma-glass": "buttons.glow",
+        "buttons.holo-foil": "buttons.glow",
         // Like button
         "buttons.like-burst": "buttons.like",
         "buttons.like-thumb": "buttons.like",
@@ -88,6 +93,7 @@ enum ButtonsFamilies {
         "buttons.like-draw": "buttons.like",
         "buttons.like-flip": "buttons.like",
         "buttons.like-double-tap": "buttons.like",
+        "buttons.clap-accumulate": "buttons.like",
         // State change
         "buttons.add-to-cart": "buttons.state-morph",
         "buttons.follow-morph": "buttons.state-morph",
@@ -95,17 +101,22 @@ enum ButtonsFamilies {
         "buttons.bookmark-ribbon": "buttons.state-morph",
         "buttons.copy-flip": "buttons.state-morph",
         "buttons.approve-stamp": "buttons.state-morph",
+        "buttons.split-confirm": "buttons.state-morph",
+        "buttons.particle-dissolve": "buttons.state-morph",
         // Hold to confirm
         "buttons.hold-to-confirm": "buttons.hold",
         "buttons.hold-ring": "buttons.hold",
         "buttons.hold-charge": "buttons.hold",
         "buttons.hold-trace": "buttons.hold",
         "buttons.hold-segments": "buttons.hold",
+        "buttons.hold-fuse": "buttons.hold",
+        "buttons.hold-liquid": "buttons.hold",
         // Expanding actions
         "buttons.expand-actions": "buttons.expand",
         "buttons.gooey-split": "buttons.expand",
         "buttons.pill-toolbar": "buttons.expand",
         "buttons.unfold-menu": "buttons.expand",
         "buttons.orbit-actions": "buttons.expand",
+        "buttons.split-dropdown": "buttons.expand",
     ]
 }
