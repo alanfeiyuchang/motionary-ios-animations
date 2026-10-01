@@ -27,5 +27,16 @@ enum ScrollEffects {
         .scrollMinimap,
         .scrollChapterRail,
         .scrollLiquidScrollbar,
+        .scrollRingCarousel,
+        .scrollVelocitySkew,
+        .scrollZoomFocus,
+        .scrollProfileHeader,
+        .scrollPullSearch,
+        .scrollPinnedZoom,
+        .scrollFoldEdge,
+        .scrollFisheyeList,
+        .scrollTextReveal,
+        .scrollDateStrip,
+        .scrollTopFabRing,
     ]
 }
