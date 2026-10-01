@@ -78,11 +78,13 @@ reboot_simulator() {
 record() { # id lang
   record_once "$@" && return 0
   reboot_simulator
-  record_once "$@" || true
+  # Second take: a clip that is still short is kept (a demo that barely changes the screen gives few
+  # frames, see MIN_SECONDS above) and padded with its last frame, rather than leaving no preview.
+  record_once "$@" keep-short || true
 }
 
-record_once() { # id lang; returns 1 when the recorder produced nothing
-  local id="$1" lang="$2" raw="$OUT/raw/$1.$2.mov"
+record_once() { # id lang [keep-short]; returns 1 when the recorder produced nothing usable
+  local id="$1" lang="$2" keep="${3:-}" raw="$OUT/raw/$1.$2.mov"
   limit 20 xcrun simctl terminate "$UDID" "$BUNDLE_ID" >/dev/null 2>&1 || true
   if ! limit 30 xcrun simctl launch "$UDID" "$BUNDLE_ID" -ML_stage "$id" -ML_noIntro YES -app.language "$lang" -app.appearance 2 >/dev/null; then
     echo "skip $id.$lang: launch failed or timed out"; return 0
@@ -109,14 +111,21 @@ record_once() { # id lang; returns 1 when the recorder produced nothing
   [ -s "$raw" ] || { echo "skip $id.$lang: empty recording"; return 1; }
   local got
   got=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$raw" 2>/dev/null || echo 0)
+  local pad=""
   if ! python3 -c "import sys; sys.exit(0 if float('${got:-0}' or 0) >= $MIN_SECONDS else 1)"; then
-    echo "skip $id.$lang: clip too short (${got:-0} s)"; rm -f "$raw"; return 1
+    if [ -z "$keep" ]; then
+      echo "skip $id.$lang: clip too short (${got:-0} s)"; rm -f "$raw"; return 1
+    fi
+    echo "keep $id.$lang: short clip (${got:-0} s), padded to $CLIP_SECONDS s"
+    pad=",tpad=stop_mode=clone:stop_duration=$CLIP_SECONDS,trim=duration=$CLIP_SECONDS"
   fi
   # Square crop from the vertical center, 480 px, 30 fps, small h264 that loops cleanly on the web.
   limit 60 ffmpeg -loglevel error -y -i "$raw" -an \
-    -vf "crop=iw:iw:0:(ih-iw)/2,scale=480:480:flags=lanczos,fps=30,format=yuv420p" \
+    -vf "crop=iw:iw:0:(ih-iw)/2,scale=480:480:flags=lanczos,fps=30,format=yuv420p$pad" \
     -c:v libx264 -preset veryfast -crf 30 -movflags +faststart "$OUT/media/$id.$lang.mp4" || return 0
   limit 30 ffmpeg -loglevel error -y -ss 2 -i "$OUT/media/$id.$lang.mp4" -frames:v 1 -q:v 5 -strict unofficial "$OUT/media/$id.$lang.jpg" || true
+  # A clip shorter than 2 s has no frame there: take its first frame instead.
+  [ -s "$OUT/media/$id.$lang.jpg" ] || limit 30 ffmpeg -loglevel error -y -i "$OUT/media/$id.$lang.mp4" -frames:v 1 -q:v 5 -strict unofficial "$OUT/media/$id.$lang.jpg" || true
   rm -f "$raw"
 }
 
