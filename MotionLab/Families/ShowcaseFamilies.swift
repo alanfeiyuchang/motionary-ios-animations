@@ -60,6 +60,9 @@ enum ShowcaseFamilies {
         "showcase.sleep-timeline": "showcase.chart-widgets",
         "showcase.sun-arc": "showcase.chart-widgets",
         "showcase.tide-pulse": "showcase.chart-widgets",
+        "showcase.steps-ring": "showcase.chart-widgets",
+        "showcase.water-intake": "showcase.chart-widgets",
+        "showcase.moon-phase": "showcase.chart-widgets",
         // Live stat cards
         "showcase.lift-status": "showcase.live-stats",
         "showcase.run-summary": "showcase.live-stats",
@@ -68,6 +71,9 @@ enum ShowcaseFamilies {
         "showcase.ev-charge": "showcase.live-stats",
         "showcase.compass-heading": "showcase.live-stats",
         "showcase.reaction-time": "showcase.live-stats",
+        "showcase.lap-timer": "showcase.live-stats",
+        "showcase.battery-widget": "showcase.live-stats",
+        "showcase.calendar-agenda": "showcase.live-stats",
         // Photo & media cards
         "showcase.board-card": "showcase.media-cards",
         "showcase.photo-play": "showcase.media-cards",
@@ -78,6 +84,8 @@ enum ShowcaseFamilies {
         "showcase.now-playing": "showcase.media-cards",
         "showcase.vinyl-scrub": "showcase.media-cards",
         "showcase.voice-memo": "showcase.media-cards",
+        "showcase.podcast-chapters": "showcase.media-cards",
+        "showcase.album-flip": "showcase.media-cards",
         // Pickers, sliders & checklists
         "showcase.slide-to-start": "showcase.controls",
         "showcase.altitude-ruler": "showcase.controls",
@@ -86,6 +94,9 @@ enum ShowcaseFamilies {
         "showcase.date-range": "showcase.controls",
         "showcase.focus-timer": "showcase.controls",
         "showcase.dimmer-lamp": "showcase.controls",
+        "showcase.camera-shutter": "showcase.controls",
+        "showcase.zoom-dial": "showcase.controls",
+        "showcase.tip-selector": "showcase.controls",
         // Routes & timelines
         "showcase.best-line": "showcase.routes",
         "showcase.flight-path": "showcase.routes",
@@ -94,6 +105,8 @@ enum ShowcaseFamilies {
         "showcase.transit-line": "showcase.routes",
         "showcase.elevation-profile": "showcase.routes",
         "showcase.parcel-tracker": "showcase.routes",
+        "showcase.ride-eta": "showcase.routes",
+        "showcase.turn-by-turn": "showcase.routes",
         // Moments & CTAs
         "showcase.go-countdown": "showcase.moments",
         "showcase.get-started": "showcase.moments",
@@ -101,5 +114,6 @@ enum ShowcaseFamilies {
         "showcase.save-burst": "showcase.moments",
         "showcase.summit-badge": "showcase.moments",
         "showcase.breath-flower": "showcase.moments",
+        "showcase.xp-level": "showcase.moments",
     ]
 }
