@@ -11,7 +11,7 @@
 
 ### 👉 [alanfeiyuchang.github.io/motionary-ios-animations](https://alanfeiyuchang.github.io/motionary-ios-animations/)
 
-![461 effects](https://img.shields.io/badge/effects-461-FF8A1F?style=flat-square)
+![839 effects](https://img.shields.io/badge/effects-839-FF8A1F?style=flat-square)
 ![15 categories](https://img.shields.io/badge/categories-15-FF8A1F?style=flat-square)
 ![85 families](https://img.shields.io/badge/families-85-FF8A1F?style=flat-square)
 ![SwiftUI](https://img.shields.io/badge/SwiftUI-iOS%2018%2B-0B0B0D?style=flat-square&logo=swift)
@@ -27,13 +27,13 @@
 做 App 时，脑子里有感觉却说不清：是弹簧还是缓动？回弹多少？只会说“来点高级感”，跟设计师、跟 AI 都讲不明白。
 更难的是，你根本不知道 iOS 原生能做出哪些效果。
 
-**Motionary** 把 **461 个真实运行的 SwiftUI 动效**按 15 个分类、85 个家族整理成一本词典：每个动效都能亲手按、拖、滑，
+**Motionary** 把 **839 个真实运行的 SwiftUI 动效**按 15 个分类、85 个家族整理成一本词典：每个动效都能亲手按、拖、滑，
 参数可以实时调，还配有**中英双语的专业提示词**，写清时长、曲线和弹簧参数，一键复制给 AI 或设计师，直接复现。
 
 > You can feel a motion but can't describe it: spring or ease? How much bounce? "Make it feel premium" means nothing to a
 > designer or an AI. And you may not even know what native iOS can do.
 >
-> **Motionary** is a dictionary of **461 real, running SwiftUI effects** in 15 categories and 85 families. Touch every one,
+> **Motionary** is a dictionary of **839 real, running SwiftUI effects** in 15 categories and 85 families. Touch every one,
 > tune its parameters live, and copy a **professional prompt written natively in Chinese and English** — durations,
 > curves and spring values included — to hand to an AI or a designer.
 
@@ -45,7 +45,7 @@
 
 ## 功能 · Features
 
-- **461 个动效，15 个分类，85 个家族** · 461 effects in 15 categories and 85 families of variations
+- **839 个动效，15 个分类，85 个家族** · 839 effects in 15 categories and 85 families of variations
   (every slider, every spinner, every tab indicator…), compared side by side in **Compare** mode.
 - **真实运行，不是视频** · Real SwiftUI, not video: tap, drag, pinch and scroll, with a reset button and Taptic Engine haptics.
 - **参数实时可调** · Live parameters: sliders, toggles and segmented choices update the demo instantly.
@@ -159,7 +159,7 @@ Free to use, modify and distribute, code and prompts alike, as long as the copyr
 
 <div align="center">
 
-**[→ 在线预览全部 461 个动效 · Browse all 461 effects online](https://alanfeiyuchang.github.io/motionary-ios-animations/)**
+**[→ 在线预览全部 839 个动效 · Browse all 839 effects online](https://alanfeiyuchang.github.io/motionary-ios-animations/)**
 
 如果觉得有用，欢迎点个 ⭐ · If it helps, a ⭐ is appreciated.
 

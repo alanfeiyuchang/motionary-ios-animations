@@ -4,7 +4,7 @@ A **family** groups variations of the same UI element or pattern — every slide
 so the app can show *many motion styles for one control* side by side. Navigation is
 **Browse → Category (families) → Family (variations: Grid / Compare) → Detail (Variations strip)**.
 
-Current catalog: **783 effects** in **85 families** across **15 categories**.
+Current catalog: **839 effects** in **85 families** across **15 categories**.
 Counts below are the number of variations per family today; singletons (1) are families that are
 explicitly waiting for more variations.
 
@@ -159,52 +159,52 @@ File: `MotionLab/Families/ScrollFamilies.swift` · list: `ScrollEffects` · 5 fa
 
 ### Text & Numbers · 文字与数字
 
-File: `MotionLab/Families/TextFamilies.swift` · list: `TextEffects` · 5 families · 41 effects
+File: `MotionLab/Families/TextFamilies.swift` · list: `TextEffects` · 5 families · 55 effects
 
 | Family id | Name · 名称 | Count | Variations (effect ids) |
 |---|---|---:|---|
-| `text.number` | Number Counter · 数字滚动 | 9 | `text.numeric-counter`, `text.odometer`, `text.split-flap`, `text.slot-reel`, `text.gravity-digits`, `text.count-up`, `text.seven-segment`, `text.price-tick`, `text.countdown` |
-| `text.reveal` | Text Reveal · 文字揭示 | 11 | `text.blur-reveal`, `text.typewriter`, `text.scramble`, `text.flip-in-3d`, `text.masked-lines`, `text.elastic-letters`, `text.light-sweep`, `text.tracking-in`, `text.ai-stream`, `text.handwriting`, `text.liquid-fill` |
-| `text.kinetic` | Kinetic Type · 动态字形 | 7 | `text.wave`, `text.circular-badge`, `text.variable-weight`, `text.spring-chain`, `text.squash-hop`, `text.path-flow`, `text.magnet-letters` |
-| `text.emphasis` | Light & Emphasis · 光效与强调 | 8 | `text.shimmer`, `text.highlighter`, `text.synced-lyrics`, `text.scribble-circle`, `text.neon-sign`, `text.gradient-flow`, `text.squiggle-underline`, `text.spotlight-mask` |
-| `text.ticker` | Rotating & Ticker · 轮播与跑马灯 | 6 | `text.rotating-words`, `text.marquee`, `text.news-ticker`, `text.word-drum`, `text.type-cycle`, `text.letter-morph` |
+| `text.number` | Number Counter · 数字滚动 | 12 | `text.numeric-counter`, `text.odometer`, `text.split-flap`, `text.slot-reel`, `text.gravity-digits`, `text.count-up`, `text.seven-segment`, `text.price-tick`, `text.countdown`, `text.score-flip`, `text.currency-grow`, `text.rank-change` |
+| `text.reveal` | Text Reveal · 文字揭示 | 15 | `text.blur-reveal`, `text.typewriter`, `text.scramble`, `text.flip-in-3d`, `text.masked-lines`, `text.elastic-letters`, `text.light-sweep`, `text.tracking-in`, `text.ai-stream`, `text.handwriting`, `text.liquid-fill`, `text.glitch-in`, `text.block-reveal`, `text.focus-pull`, `text.impact-slam` |
+| `text.kinetic` | Kinetic Type · 动态字形 | 10 | `text.wave`, `text.circular-badge`, `text.variable-weight`, `text.spring-chain`, `text.squash-hop`, `text.path-flow`, `text.magnet-letters`, `text.ring-3d`, `text.echo-trail`, `text.letter-drop` |
+| `text.emphasis` | Light & Emphasis · 光效与强调 | 10 | `text.shimmer`, `text.highlighter`, `text.synced-lyrics`, `text.scribble-circle`, `text.neon-sign`, `text.gradient-flow`, `text.squiggle-underline`, `text.spotlight-mask`, `text.strike-rewrite`, `text.long-shadow` |
+| `text.ticker` | Rotating & Ticker · 轮播与跑马灯 | 8 | `text.rotating-words`, `text.marquee`, `text.news-ticker`, `text.word-drum`, `text.type-cycle`, `text.letter-morph`, `text.live-captions`, `text.terminal-log` |
 
 ### Icons & Symbols · 图标与符号
 
-File: `MotionLab/Families/IconsFamilies.swift` · list: `IconEffects` · 5 families · 36 effects
+File: `MotionLab/Families/IconsFamilies.swift` · list: `IconEffects` · 5 families · 50 effects
 
 | Family id | Name · 名称 | Count | Variations (effect ids) |
 |---|---|---:|---|
-| `icons.symbol-effects` | SF Symbol Effects · SF 符号特效 | 5 | `icons.bounce`, `icons.replace`, `icons.ripple-grid`, `icons.draw-on`, `icons.appear-disappear` |
-| `icons.ambient` | Ambient Icons · 常驻动态图标 | 6 | `icons.variable-color`, `icons.wiggle-rotate-breathe`, `icons.weather`, `icons.radar-ping`, `icons.ai-sparkle`, `icons.live-waveform` |
-| `icons.glyph-morph` | Glyph Morph · 图标形变 | 8 | `icons.play-pause`, `icons.hamburger-morph`, `icons.plus-close`, `icons.chevron-flip`, `icons.search-close`, `icons.sun-moon`, `icons.eye-blink`, `icons.mute-slash` |
-| `icons.status` | Status Icons · 状态图标 | 7 | `icons.checkmark-draw`, `icons.download`, `icons.padlock`, `icons.wifi-connect`, `icons.battery-charge`, `icons.cloud-sync`, `icons.faceid-scan` |
-| `icons.action` | Action Icons · 动作图标 | 10 | `icons.heart-like`, `icons.bell-ring`, `icons.trash-delete`, `icons.paper-plane`, `icons.bookmark-save`, `icons.star-burst`, `icons.pin-drop`, `icons.mic-record`, `icons.archive-box`, `icons.refresh-spin` |
+| `icons.symbol-effects` | SF Symbol Effects · SF 符号特效 | 6 | `icons.bounce`, `icons.replace`, `icons.ripple-grid`, `icons.draw-on`, `icons.appear-disappear`, `icons.symbol-chain` |
+| `icons.ambient` | Ambient Icons · 常驻动态图标 | 7 | `icons.variable-color`, `icons.wiggle-rotate-breathe`, `icons.weather`, `icons.radar-ping`, `icons.ai-sparkle`, `icons.live-waveform`, `icons.clock-tick` |
+| `icons.glyph-morph` | Glyph Morph · 图标形变 | 11 | `icons.play-pause`, `icons.hamburger-morph`, `icons.plus-close`, `icons.chevron-flip`, `icons.search-close`, `icons.sun-moon`, `icons.eye-blink`, `icons.mute-slash`, `icons.grid-list`, `icons.link-break`, `icons.expand-collapse` |
+| `icons.status` | Status Icons · 状态图标 | 10 | `icons.checkmark-draw`, `icons.download`, `icons.padlock`, `icons.wifi-connect`, `icons.battery-charge`, `icons.cloud-sync`, `icons.faceid-scan`, `icons.signal-bars`, `icons.airdrop-rings`, `icons.nfc-tap` |
+| `icons.action` | Action Icons · 动作图标 | 16 | `icons.heart-like`, `icons.bell-ring`, `icons.trash-delete`, `icons.paper-plane`, `icons.bookmark-save`, `icons.star-burst`, `icons.pin-drop`, `icons.mic-record`, `icons.archive-box`, `icons.refresh-spin`, `icons.copy-duplicate`, `icons.double-check`, `icons.cart-bounce`, `icons.camera-snap`, `icons.flag-wave`, `icons.gift-open` |
 
 ### Gestures & Physics · 手势与物理
 
-File: `MotionLab/Families/GesturesFamilies.swift` · list: `GestureEffects` · 6 families · 43 effects
+File: `MotionLab/Families/GesturesFamilies.swift` · list: `GestureEffects` · 6 families · 57 effects
 
 | Family id | Name · 名称 | Count | Variations (effect ids) |
 |---|---|---:|---|
-| `gestures.drag-spring` | Drag & Spring · 拖拽与弹簧 | 9 | `gestures.rubber-band`, `gestures.jelly-stretch`, `gestures.spring-chain`, `gestures.gooey-blobs`, `gestures.magnetic-snap`, `gestures.elastic-tether`, `gestures.pendulum-swing`, `gestures.joystick`, `gestures.sticky-goo` |
-| `gestures.throw` | Throw & Snap · 抛掷与吸附 | 7 | `gestures.fling-inertia`, `gestures.pip-snap`, `gestures.drag-dismiss`, `gestures.gravity-toss`, `gestures.detent-sheet`, `gestures.paper-toss`, `gestures.spin-wheel` |
-| `gestures.physics` | Physics Toys · 物理模拟 | 8 | `gestures.charge-burst`, `gestures.verlet-rope`, `gestures.newtons-cradle`, `gestures.coil-spring`, `gestures.orbit-slingshot`, `gestures.ball-pit`, `gestures.soft-body`, `gestures.cloth-grid` |
-| `gestures.list` | List Gestures · 列表手势 | 7 | `gestures.swipe-actions`, `gestures.drag-reorder`, `gestures.swipe-complete`, `gestures.staged-swipe`, `gestures.drag-select`, `gestures.pull-to-create`, `gestures.kanban-drag` |
-| `gestures.pinch` | Pinch, Zoom & Loupe · 捏合缩放与放大镜 | 6 | `gestures.pinch-rotate`, `gestures.magnifier-loupe`, `gestures.photo-viewer`, `gestures.pinch-grid`, `gestures.pinch-open`, `gestures.zoom-timeline` |
-| `gestures.slide-confirm` | Slide to Confirm · 滑动确认 | 6 | `gestures.slide-to-confirm`, `gestures.stretch-slide`, `gestures.notch-slide`, `gestures.arc-slide`, `gestures.pull-cord`, `gestures.swipe-up-unlock` |
+| `gestures.drag-spring` | Drag & Spring · 拖拽与弹簧 | 12 | `gestures.rubber-band`, `gestures.jelly-stretch`, `gestures.spring-chain`, `gestures.gooey-blobs`, `gestures.magnetic-snap`, `gestures.elastic-tether`, `gestures.pendulum-swing`, `gestures.joystick`, `gestures.sticky-goo`, `gestures.mesh-warp`, `gestures.balloon-tether`, `gestures.slinky` |
+| `gestures.throw` | Throw & Snap · 抛掷与吸附 | 9 | `gestures.fling-inertia`, `gestures.pip-snap`, `gestures.drag-dismiss`, `gestures.gravity-toss`, `gestures.detent-sheet`, `gestures.paper-toss`, `gestures.spin-wheel`, `gestures.curling-target`, `gestures.air-hockey` |
+| `gestures.physics` | Physics Toys · 物理模拟 | 12 | `gestures.charge-burst`, `gestures.verlet-rope`, `gestures.newtons-cradle`, `gestures.coil-spring`, `gestures.orbit-slingshot`, `gestures.ball-pit`, `gestures.soft-body`, `gestures.cloth-grid`, `gestures.double-pendulum`, `gestures.sand-fall`, `gestures.bubble-wrap`, `gestures.wave-string` |
+| `gestures.list` | List Gestures · 列表手势 | 9 | `gestures.swipe-actions`, `gestures.drag-reorder`, `gestures.swipe-complete`, `gestures.staged-swipe`, `gestures.drag-select`, `gestures.pull-to-create`, `gestures.kanban-drag`, `gestures.swipe-reply`, `gestures.jiggle-grid` |
+| `gestures.pinch` | Pinch, Zoom & Loupe · 捏合缩放与放大镜 | 8 | `gestures.pinch-rotate`, `gestures.magnifier-loupe`, `gestures.photo-viewer`, `gestures.pinch-grid`, `gestures.pinch-open`, `gestures.zoom-timeline`, `gestures.rotate-knob`, `gestures.squeeze-crumple` |
+| `gestures.slide-confirm` | Slide to Confirm · 滑动确认 | 7 | `gestures.slide-to-confirm`, `gestures.stretch-slide`, `gestures.notch-slide`, `gestures.arc-slide`, `gestures.pull-cord`, `gestures.swipe-up-unlock`, `gestures.answer-call` |
 
 ### Data & Charts · 数据与图表
 
-File: `MotionLab/Families/ChartsFamilies.swift` · list: `ChartEffects` · 5 families · 36 effects
+File: `MotionLab/Families/ChartsFamilies.swift` · list: `ChartEffects` · 5 families · 50 effects
 
 | Family id | Name · 名称 | Count | Variations (effect ids) |
 |---|---|---:|---|
-| `charts.bar` | Bar Charts · 柱状图 | 8 | `charts.bar-grow`, `charts.bar-race`, `charts.stacked-bars`, `charts.liquid-bars`, `charts.brick-bars`, `charts.waterfall`, `charts.lollipop`, `charts.range-brush` |
-| `charts.line` | Line Charts · 折线图 | 8 | `charts.line-draw`, `charts.scrub-tooltip`, `charts.sparkline-stream`, `charts.range-morph`, `charts.candlestick-live`, `charts.stacked-area`, `charts.ecg-live`, `charts.line-compare` |
-| `charts.ring` | Rings & Gauges · 圆环与仪表 | 7 | `charts.donut-explode`, `charts.gauge-needle`, `charts.activity-rings`, `charts.segmented-gauge`, `charts.rose-bloom`, `charts.radial-bars`, `charts.sunburst` |
-| `charts.morph` | Chart Morph · 图表形变 | 6 | `charts.radar-morph`, `charts.donut-to-bars`, `charts.bars-to-line`, `charts.scatter-histogram`, `charts.grouped-stacked`, `charts.treemap` |
-| `charts.kpi` | Stat Tiles & Unit Grids · 指标卡与格阵图 | 7 | `charts.heatmap-cascade`, `charts.kpi-count-up`, `charts.odometer-kpi`, `charts.bullet-kpi`, `charts.waffle-kpi`, `charts.funnel-flow`, `charts.trend-pill` |
+| `charts.bar` | Bar Charts · 柱状图 | 11 | `charts.bar-grow`, `charts.bar-race`, `charts.stacked-bars`, `charts.liquid-bars`, `charts.brick-bars`, `charts.waterfall`, `charts.lollipop`, `charts.range-brush`, `charts.diverging`, `charts.pyramid`, `charts.bar-drilldown` |
+| `charts.line` | Line Charts · 折线图 | 12 | `charts.line-draw`, `charts.scrub-tooltip`, `charts.sparkline-stream`, `charts.range-morph`, `charts.candlestick-live`, `charts.stacked-area`, `charts.ecg-live`, `charts.line-compare`, `charts.forecast-band`, `charts.threshold-split`, `charts.legend-focus`, `charts.pan-zoom` |
+| `charts.ring` | Rings & Gauges · 圆环与仪表 | 9 | `charts.donut-explode`, `charts.gauge-needle`, `charts.activity-rings`, `charts.segmented-gauge`, `charts.rose-bloom`, `charts.radial-bars`, `charts.sunburst`, `charts.radial-schedule`, `charts.hemicycle` |
+| `charts.morph` | Chart Morph · 图表形变 | 9 | `charts.radar-morph`, `charts.donut-to-bars`, `charts.bars-to-line`, `charts.scatter-histogram`, `charts.grouped-stacked`, `charts.treemap`, `charts.scatter-cluster`, `charts.dot-matrix-morph`, `charts.sankey-flow` |
+| `charts.kpi` | Stat Tiles & Unit Grids · 指标卡与格阵图 | 9 | `charts.heatmap-cascade`, `charts.kpi-count-up`, `charts.odometer-kpi`, `charts.bullet-kpi`, `charts.waffle-kpi`, `charts.funnel-flow`, `charts.trend-pill`, `charts.thermometer`, `charts.leaderboard` |
 
 ### Backgrounds & Ambience · 背景与氛围
 
