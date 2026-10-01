@@ -120,9 +120,12 @@ record_once() { # id lang [keep-short]; returns 1 when the recorder produced not
     pad=",tpad=stop_mode=clone:stop_duration=$CLIP_SECONDS,trim=duration=$CLIP_SECONDS"
   fi
   # Square crop from the vertical center, 480 px, 30 fps, small h264 that loops cleanly on the web.
+  echo "clip $id.$lang: ${got:-?} s raw"
   limit 60 ffmpeg -loglevel error -y -i "$raw" -an \
     -vf "crop=iw:iw:0:(ih-iw)/2,scale=480:480:flags=lanczos,fps=30,format=yuv420p$pad" \
-    -c:v libx264 -preset veryfast -crf 30 -movflags +faststart "$OUT/media/$id.$lang.mp4" || return 0
+    -c:v libx264 -preset veryfast -crf 30 -movflags +faststart "$OUT/media/$id.$lang.mp4" \
+    || { echo "skip $id.$lang: ffmpeg could not encode the clip (${got:-?} s raw)"; rm -f "$OUT/media/$id.$lang.mp4"; return 1; }
+  [ -s "$OUT/media/$id.$lang.mp4" ] || { echo "skip $id.$lang: empty encode"; return 1; }
   limit 30 ffmpeg -loglevel error -y -ss 2 -i "$OUT/media/$id.$lang.mp4" -frames:v 1 -q:v 5 -strict unofficial "$OUT/media/$id.$lang.jpg" || true
   # A clip shorter than 2 s has no frame there: take its first frame instead.
   [ -s "$OUT/media/$id.$lang.jpg" ] || limit 30 ffmpeg -loglevel error -y -i "$OUT/media/$id.$lang.mp4" -frames:v 1 -q:v 5 -strict unofficial "$OUT/media/$id.$lang.jpg" || true
