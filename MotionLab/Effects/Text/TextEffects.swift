@@ -49,5 +49,20 @@ enum TextEffects {
         .textGradientFlow,
         .textSquiggleUnderline,
         .textSpotlightMask,
+        // Round 2, part B
+        .textScoreFlip,
+        .textCurrencyGrow,
+        .textRankChange,
+        .textGlitchIn,
+        .textBlockReveal,
+        .textFocusPull,
+        .textImpactSlam,
+        .textRing3D,
+        .textEchoTrail,
+        .textLetterDrop,
+        .textLiveCaptions,
+        .textTerminalLog,
+        .textStrikeRewrite,
+        .textLongShadow,
     ]
 }

@@ -55,6 +55,9 @@ enum TextFamilies {
         "text.seven-segment": "text.number",
         "text.price-tick": "text.number",
         "text.countdown": "text.number",
+        "text.score-flip": "text.number",
+        "text.currency-grow": "text.number",
+        "text.rank-change": "text.number",
         // Text reveal
         "text.blur-reveal": "text.reveal",
         "text.typewriter": "text.reveal",
@@ -67,6 +70,10 @@ enum TextFamilies {
         "text.ai-stream": "text.reveal",
         "text.handwriting": "text.reveal",
         "text.liquid-fill": "text.reveal",
+        "text.glitch-in": "text.reveal",
+        "text.block-reveal": "text.reveal",
+        "text.focus-pull": "text.reveal",
+        "text.impact-slam": "text.reveal",
         // Kinetic type
         "text.wave": "text.kinetic",
         "text.circular-badge": "text.kinetic",
@@ -75,6 +82,9 @@ enum TextFamilies {
         "text.squash-hop": "text.kinetic",
         "text.path-flow": "text.kinetic",
         "text.magnet-letters": "text.kinetic",
+        "text.ring-3d": "text.kinetic",
+        "text.echo-trail": "text.kinetic",
+        "text.letter-drop": "text.kinetic",
         // Light & emphasis
         "text.shimmer": "text.emphasis",
         "text.highlighter": "text.emphasis",
@@ -84,6 +94,8 @@ enum TextFamilies {
         "text.gradient-flow": "text.emphasis",
         "text.squiggle-underline": "text.emphasis",
         "text.spotlight-mask": "text.emphasis",
+        "text.strike-rewrite": "text.emphasis",
+        "text.long-shadow": "text.emphasis",
         // Rotating & ticker
         "text.rotating-words": "text.ticker",
         "text.marquee": "text.ticker",
@@ -91,5 +103,7 @@ enum TextFamilies {
         "text.word-drum": "text.ticker",
         "text.type-cycle": "text.ticker",
         "text.letter-morph": "text.ticker",
+        "text.live-captions": "text.ticker",
+        "text.terminal-log": "text.ticker",
     ]
 }

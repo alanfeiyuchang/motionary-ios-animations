@@ -254,3 +254,39 @@ enum TextFXCurve {
         return u < 0.5 ? 2 * u * u : 1 - pow(-2 * u + 2, 2) / 2
     }
 }
+
+// MARK: - Replayable pulse
+
+/// Replays a 0→1 progress every time `trigger` changes and hands it to `content` (1 at rest, 0 while
+/// the optional `delay` runs). The progress is linear; shape it inside `content`.
+struct TextFXPulse<Content: View>: View {
+    let trigger: Int
+    var duration: Double = 0.8
+    var delay: Double = 0
+    @ViewBuilder let content: (CGFloat) -> Content
+
+    @State private var turns = 0
+
+    var body: some View {
+        TextFXPulseBody(turn: CGFloat(turns), target: turns, content: content)
+            .onChange(of: trigger) {
+                withAnimation(.linear(duration: duration).delay(delay)) { turns += 1 }
+            }
+    }
+}
+
+private struct TextFXPulseBody<Content: View>: View, Animatable {
+    var turn: CGFloat
+    let target: Int
+    let content: (CGFloat) -> Content
+
+    var animatableData: CGFloat {
+        get { turn }
+        set { turn = newValue }
+    }
+
+    var body: some View {
+        let progress: CGFloat = target == 0 ? 1 : min(max(turn - CGFloat(target - 1), 0), 1)
+        content(progress)
+    }
+}
