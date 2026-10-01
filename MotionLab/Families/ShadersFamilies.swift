@@ -76,5 +76,18 @@ enum ShadersFamilies {
         "shader.caustics": "shaders.generative",
         "shader.voronoi-cells": "shaders.generative",
         "shader.tunnel": "shaders.generative",
+        // Second batch
+        "shader.heat-haze": "shaders.distortion",
+        "shader.shockwave": "shaders.distortion",
+        "shader.black-hole": "shaders.distortion",
+        "shader.melt": "shaders.transition",
+        "shader.ink-bleed": "shaders.transition",
+        "shader.zoom-blur": "shaders.transition",
+        "shader.ascii": "shaders.retro",
+        "shader.thermal": "shaders.retro",
+        "shader.frost-grow": "shaders.glass",
+        "shader.prism": "shaders.glass",
+        "shader.liquid-chrome": "shaders.generative",
+        "shader.nebula": "shaders.generative",
     ]
 }

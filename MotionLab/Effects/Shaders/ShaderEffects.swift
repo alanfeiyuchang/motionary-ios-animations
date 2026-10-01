@@ -27,6 +27,19 @@ enum ShaderEffects {
         .shaderVHS,
         .shaderVoronoiCells,
         .shaderTunnel,
+        // Second batch
+        .shaderHeatHaze,
+        .shaderShockwave,
+        .shaderBlackHole,
+        .shaderMelt,
+        .shaderInkBleed,
+        .shaderZoomBlur,
+        .shaderAscii,
+        .shaderThermal,
+        .shaderFrostGrow,
+        .shaderPrism,
+        .shaderLiquidChrome,
+        .shaderNebula,
     ]
 }
 
