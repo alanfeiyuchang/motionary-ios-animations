@@ -62,6 +62,9 @@ enum GesturesFamilies {
         "gestures.pendulum-swing": "gestures.drag-spring",
         "gestures.joystick": "gestures.drag-spring",
         "gestures.sticky-goo": "gestures.drag-spring",
+        "gestures.mesh-warp": "gestures.drag-spring",
+        "gestures.balloon-tether": "gestures.drag-spring",
+        "gestures.slinky": "gestures.drag-spring",
         // Throw & snap
         "gestures.fling-inertia": "gestures.throw",
         "gestures.pip-snap": "gestures.throw",
@@ -70,6 +73,8 @@ enum GesturesFamilies {
         "gestures.detent-sheet": "gestures.throw",
         "gestures.paper-toss": "gestures.throw",
         "gestures.spin-wheel": "gestures.throw",
+        "gestures.curling-target": "gestures.throw",
+        "gestures.air-hockey": "gestures.throw",
         // Physics toys
         "gestures.charge-burst": "gestures.physics",
         "gestures.verlet-rope": "gestures.physics",
@@ -79,6 +84,10 @@ enum GesturesFamilies {
         "gestures.ball-pit": "gestures.physics",
         "gestures.soft-body": "gestures.physics",
         "gestures.cloth-grid": "gestures.physics",
+        "gestures.double-pendulum": "gestures.physics",
+        "gestures.sand-fall": "gestures.physics",
+        "gestures.bubble-wrap": "gestures.physics",
+        "gestures.wave-string": "gestures.physics",
         // List gestures
         "gestures.swipe-actions": "gestures.list",
         "gestures.drag-reorder": "gestures.list",
@@ -87,6 +96,8 @@ enum GesturesFamilies {
         "gestures.drag-select": "gestures.list",
         "gestures.pull-to-create": "gestures.list",
         "gestures.kanban-drag": "gestures.list",
+        "gestures.swipe-reply": "gestures.list",
+        "gestures.jiggle-grid": "gestures.list",
         // Pinch, zoom & loupe
         "gestures.pinch-rotate": "gestures.pinch",
         "gestures.magnifier-loupe": "gestures.pinch",
@@ -94,6 +105,8 @@ enum GesturesFamilies {
         "gestures.pinch-grid": "gestures.pinch",
         "gestures.pinch-open": "gestures.pinch",
         "gestures.zoom-timeline": "gestures.pinch",
+        "gestures.rotate-knob": "gestures.pinch",
+        "gestures.squeeze-crumple": "gestures.pinch",
         // Slide to confirm
         "gestures.slide-to-confirm": "gestures.slide-confirm",
         "gestures.stretch-slide": "gestures.slide-confirm",
@@ -101,5 +114,6 @@ enum GesturesFamilies {
         "gestures.arc-slide": "gestures.slide-confirm",
         "gestures.pull-cord": "gestures.slide-confirm",
         "gestures.swipe-up-unlock": "gestures.slide-confirm",
+        "gestures.answer-call": "gestures.slide-confirm",
     ]
 }

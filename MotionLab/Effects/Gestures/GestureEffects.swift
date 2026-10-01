@@ -50,5 +50,20 @@ enum GestureEffects {
         .gesturesSoftBody,
         .gesturesClothGrid,
         .gesturesSwipeUpUnlock,
+        // Round 2, part B
+        .gesturesMeshWarp,
+        .gesturesBalloonTether,
+        .gesturesSlinky,
+        .gesturesCurlingTarget,
+        .gesturesAirHockey,
+        .gesturesRotateKnob,
+        .gesturesSqueezeCrumple,
+        .gesturesSwipeReply,
+        .gesturesJiggleGrid,
+        .gesturesDoublePendulum,
+        .gesturesSandFall,
+        .gesturesBubbleWrap,
+        .gesturesWaveString,
+        .gesturesAnswerCall,
     ]
 }
