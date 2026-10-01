@@ -12,10 +12,10 @@ extension Effect {
             "日历头部：大号月份标题、周数标签，以及七个日期格（星期、日期、事件圆点）组成的日期条。选中的那天位于渐变胶囊内，文字通过遮罩显示为白色，字形恰好在胶囊边缘处变色。点击另一天，胶囊以蠕虫式拉伸滑过去：前沿先弹出（响应0.28秒），后沿随后跟上（0.4秒、阻尼0.72）。左右滑动让日期条以弹簧（0.45秒、阻尼0.86）翻过一周，首尾有橡皮筋阻尼；胶囊留在原来的列上，并在日期从下面滑过时收缩到88%。选中日期跨月时，标题沿移动方向纵向滚动切换，下方日程卡片模糊过渡到新一天。"
         ),
         implementation: L(
-            "The strip is an HStack of week pages offset by a page position that a DragGesture scrubs and a spring settles. It is drawn twice: once in normal colours and once in white, masked by the pill, whose leading and trailing edges are two separately animated values. The month title uses an id plus a push transition whose edge follows the direction.",
-            "日期条是一排周页面组成的 HStack，按页位置做偏移；DragGesture 直接拖动这个位置，松手后由弹簧落定。它被绘制两遍：一遍正常配色，一遍白色并用胶囊做遮罩；胶囊的前沿和后沿是两个分别做动画的数值。月份标题用 id 配合 push 转场，转场方向跟随移动方向。"
+            "The strip is an HStack of week pages offset by a page position that a DragGesture scrubs and a spring settles. It is drawn twice: once in normal colours and once in white, masked by the pill, whose leading and trailing edges are two separately animated values. The month title uses an id plus a custom push-like Transition that reads the travel direction when it runs.",
+            "日期条是一排周页面组成的 HStack，按页位置做偏移；DragGesture 直接拖动这个位置，松手后由弹簧落定。它被绘制两遍：一遍正常配色，一遍白色并用胶囊做遮罩；胶囊的前沿和后沿是两个分别做动画的数值。月份标题用 id 配合自定义的 push 式 Transition，在转场执行时读取移动方向。"
         ),
-        apis: ["DragGesture", "mask(alignment:_:)", "Calendar", "transition(.push(from:))", "contentTransition(.numericText)", "spring(response:dampingFraction:)"],
+        apis: ["DragGesture", "mask(alignment:_:)", "Calendar", "Transition", "contentTransition(.numericText)", "spring(response:dampingFraction:)"],
         tags: ["calendar", "week strip", "date picker", "pill", "paging", "日历", "周视图", "日期选择", "胶囊", "翻页"],
         params: [
             .choice("start", L("Week starts on", "每周起始日"), [L("Monday", "周一"), L("Sunday", "周日")], default: 0),
@@ -109,7 +109,9 @@ private struct ScrollDateStripDemo: View {
     @State private var dragStart: CGFloat?
     @State private var paging = false
     /// +1 when the selection last moved forward in time, −1 backward (title roll direction).
-    @State private var direction = 1
+    /// A reference, so the outgoing title's transition reads the direction of the move that removes it
+    /// (a value captured in `body` would still be the previous move's).
+    @State private var direction = ScrollDateDirection()
     @State private var width: CGFloat = 340
     @State private var step = 0
 
@@ -154,12 +156,11 @@ private struct ScrollDateStripDemo: View {
 
     private var header: some View {
         let day = selected
-        let up = direction > 0
         return HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text(verbatim: ScrollDateModel.monthName(day.month, ctx.language))
                 .font(.system(size: 26, weight: .bold))
                 .id(day.month)
-                .transition(.push(from: up ? .bottom : .top))
+                .transition(ScrollDateRoll(direction: direction))
             Text(verbatim: String(day.year))
                 .font(.system(size: 26, weight: .regular).monospacedDigit())
                 .foregroundStyle(.secondary)
@@ -263,7 +264,7 @@ private struct ScrollDateStripDemo: View {
     private func select(column newColumn: Int, haptic: Bool) {
         guard newColumn != column else { return }
         let forward = newColumn > column
-        direction = forward ? 1 : -1
+        direction.value = forward ? 1 : -1
         if haptic { Haptics.selection() }
         let response = ctx["response"]
         let slow: Animation = .spring(response: response, dampingFraction: 0.72)
@@ -277,7 +278,7 @@ private struct ScrollDateStripDemo: View {
     private func turn(to target: Int, haptic: Bool) {
         let clamped = target.clamped(to: 0...(ScrollDateModel.weekCount - 1))
         if clamped != week {
-            direction = clamped > week ? 1 : -1
+            direction.value = clamped > week ? 1 : -1
             if haptic { Haptics.selection() }
         }
         // The pill stays pinched while the dates slide beneath it, then lets go.
@@ -308,6 +309,25 @@ private struct ScrollDateStripDemo: View {
             select(column: today, haptic: false)
         }
         step += 1
+    }
+}
+
+/// Direction of the latest selection move: +1 forward in time, −1 backward.
+private final class ScrollDateDirection {
+    var value = 1
+}
+
+/// The month title's roll: like `.push`, but the edge is read when the transition runs, so the outgoing
+/// title always leaves the way the selection just moved (forward: out through the top, in from the bottom).
+private struct ScrollDateRoll: Transition {
+    let direction: ScrollDateDirection
+
+    func body(content: Content, phase: TransitionPhase) -> some View {
+        let sign = CGFloat(direction.value)
+        let y: CGFloat = phase == .willAppear ? 30 * sign : (phase == .didDisappear ? -30 * sign : 0)
+        return content
+            .offset(y: y)
+            .opacity(phase.isIdentity ? 1 : 0)
     }
 }
 
