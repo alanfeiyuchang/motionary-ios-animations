@@ -40,25 +40,39 @@ xcrun simctl terminate "$UDID" "$BUNDLE_ID" >/dev/null 2>&1 || true
 # Let first-boot system banners expire before recording.
 sleep 30
 
+# The shard is decided by an effect's position in the full catalog, before the "missing" filter: every
+# shard job runs that filter on its own, and a transient network error must not move an effect to a
+# different shard (it would then be recorded by none).
 IDS=$(ONLY_MISSING_FROM="${ONLY_MISSING_FROM:-}" python3 -c "
-import concurrent.futures, json, os, subprocess, urllib.error, urllib.request
+import concurrent.futures, json, os, subprocess, time, urllib.error, urllib.request
 ids=[e['id'] for e in json.load(open('$OUT/catalog.json'))['effects']]
+ids=[i for n,i in enumerate(ids) if n % $SHARDS == $SHARD]
 base=os.environ['ONLY_MISSING_FROM'].rstrip('/')
+def exists(url):
+    for attempt in range(5):
+        try:
+            urllib.request.urlopen(urllib.request.Request(url, method='HEAD'), timeout=30)
+            return True
+        except urllib.error.HTTPError as e:
+            if e.code == 404: return False
+        except (urllib.error.URLError, TimeoutError, ConnectionError):
+            pass
+        time.sleep(1.5 * (attempt + 1))
+    return True  # unreachable is not the same as missing: leave it for the next run
 def seconds(url):
-    r=subprocess.run(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',url],capture_output=True,text=True,timeout=60)
-    try: return float(r.stdout.strip())
-    except ValueError: return 0
+    for attempt in range(3):
+        r=subprocess.run(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',url],capture_output=True,text=True,timeout=90)
+        try: return float(r.stdout.strip())
+        except ValueError: time.sleep(2)
+    return $MIN_SECONDS  # could not be measured: do not treat as short
 def published(i):
     for name in (f'{i}.{l}.{x}' for l in ('zh', 'en') for x in ('mp4', 'jpg')):
-        try:
-            urllib.request.urlopen(urllib.request.Request(f'{base}/{name}', method='HEAD'), timeout=30)
-        except (urllib.error.URLError, TimeoutError):
-            return False
+        if not exists(f'{base}/{name}'): return False
     return all(seconds(f'{base}/{i}.{l}.mp4') >= $MIN_SECONDS for l in ('zh', 'en'))
 if base:
-    with concurrent.futures.ThreadPoolExecutor(16) as pool:
+    with concurrent.futures.ThreadPoolExecutor(6) as pool:
         ids=[i for i, ok in zip(ids, pool.map(published, ids)) if not ok]
-print('\n'.join(i for n,i in enumerate(ids) if n % $SHARDS == $SHARD))")
+print('\n'.join(ids))")
 [ -n "${ONLY_MISSING_FROM:-}" ] && echo "Missing from $ONLY_MISSING_FROM, this shard: $(echo "$IDS" | grep -c . || true)"
 
 # Runs a command with a time limit (macOS has no GNU timeout); a hung simctl call must not stall the shard.
