@@ -54,5 +54,20 @@ enum LoadingEffects {
         .loadingPercentPill,
         .loadingCountdownRing,
         .loadingLaunchButton,
+        // Round 2, part B
+        .loadingPendulumWave,
+        .loadingAtomOrbit,
+        .loadingSquashBall,
+        .loadingSnakePixels,
+        .loadingRippleDrop,
+        .loadingSkeletonResolve,
+        .loadingMapTiles,
+        .loadingMilestones,
+        .loadingBufferScrub,
+        .loadingFileQueue,
+        .loadingOrbitRing,
+        .loadingHalfGauge,
+        .loadingPayButton,
+        .loadingSyncButton,
     ]
 }
