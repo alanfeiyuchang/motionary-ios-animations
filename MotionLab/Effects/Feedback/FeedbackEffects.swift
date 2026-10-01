@@ -38,5 +38,17 @@ enum FeedbackEffects {
         .feedbackSunRefresh,
         .feedbackLetterRefresh,
         .feedbackDotsRefresh,
+        // Round 2
+        .feedbackProgressToast,
+        .feedbackAchievementBanner,
+        .feedbackPaymentDone,
+        .feedbackFireworks,
+        .feedbackCoinReward,
+        .feedbackCardDeclined,
+        .feedbackCounterBadge,
+        .feedbackTypingBubble,
+        .feedbackSilentHUD,
+        .feedbackAutosavePulse,
+        .feedbackThreadRefresh,
     ]
 }
