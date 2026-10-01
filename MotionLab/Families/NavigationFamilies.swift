@@ -61,6 +61,9 @@ enum NavigationFamilies {
         "navigation.hop-dot-tab": "navigation.tab-indicator",
         "navigation.trace-tab": "navigation.tab-indicator",
         "navigation.folder-tabs": "navigation.tab-indicator",
+        "navigation.bracket-focus": "navigation.tab-indicator",
+        "navigation.title-scale-tabs": "navigation.tab-indicator",
+        "navigation.glow-underline": "navigation.tab-indicator",
         // Tab bars & docks
         "navigation.collapsing-tab-bar": "navigation.tab-bar",
         "navigation.dock-magnify": "navigation.tab-bar",
@@ -70,6 +73,8 @@ enum NavigationFamilies {
         "navigation.glass-tab-bar": "navigation.tab-bar",
         "navigation.bubble-tab-bar": "navigation.tab-bar",
         "navigation.curve-fab-bar": "navigation.tab-bar",
+        "navigation.island-bar-player": "navigation.tab-bar",
+        "navigation.icon-pop-bar": "navigation.tab-bar",
         // Page & step indicators
         "navigation.page-dots": "navigation.page-indicator",
         "navigation.step-progress": "navigation.page-indicator",
@@ -77,6 +82,8 @@ enum NavigationFamilies {
         "navigation.timer-dots": "navigation.page-indicator",
         "navigation.scrolling-dots": "navigation.page-indicator",
         "navigation.page-control-scrub": "navigation.page-indicator",
+        "navigation.onboarding-morph": "navigation.page-indicator",
+        "navigation.filmstrip-scrubber": "navigation.page-indicator",
         // Drawers & sidebars
         "navigation.side-drawer-3d": "navigation.drawer",
         "navigation.sidebar-rail": "navigation.drawer",
@@ -84,6 +91,8 @@ enum NavigationFamilies {
         "navigation.elastic-drawer": "navigation.drawer",
         "navigation.popout-drawer": "navigation.drawer",
         "navigation.space-switcher": "navigation.drawer",
+        "navigation.card-stack-drawer": "navigation.drawer",
+        "navigation.split-pane": "navigation.drawer",
         // Sheets & pushes
         "navigation.push-parallax": "navigation.sheet",
         "navigation.bottom-sheet": "navigation.sheet",
@@ -92,6 +101,8 @@ enum NavigationFamilies {
         "navigation.floating-sheet": "navigation.sheet",
         "navigation.fluid-sheet": "navigation.sheet",
         "navigation.peek-pop": "navigation.sheet",
+        "navigation.top-curtain": "navigation.sheet",
+        "navigation.title-handoff": "navigation.sheet",
         // Menus
         "navigation.radial-menu": "navigation.menu",
         "navigation.context-popover": "navigation.menu",
@@ -101,5 +112,8 @@ enum NavigationFamilies {
         "navigation.command-palette": "navigation.menu",
         "navigation.context-toolbar": "navigation.menu",
         "navigation.breadcrumbs": "navigation.menu",
+        "navigation.submenu-slide": "navigation.menu",
+        "navigation.app-switcher": "navigation.menu",
+        "navigation.magnify-menu": "navigation.menu",
     ]
 }
