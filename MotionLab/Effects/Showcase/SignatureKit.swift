@@ -3,7 +3,7 @@ import SwiftUI
 /// The "Signature Interactions" category: dark, glossy, widget-style cards with a warm orange accent
 /// (think premium outdoor / travel dashboards). Shared styling lives here so every entry feels like one product.
 enum ShowcaseEffects {
-    static let all: [Effect] = ShowcaseSportEffects.all + ShowcaseTravelEffects.all + ShowcaseLifeEffects.all
+    static let all: [Effect] = ShowcaseSportEffects.all + ShowcaseTravelEffects.all + ShowcaseLifeEffects.all + ShowcaseStudioEffects.all
 }
 
 enum Signature {
