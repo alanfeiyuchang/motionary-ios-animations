@@ -51,12 +51,16 @@ enum CardsFamilies {
         "cards.parallax-layers": "cards.tilt",
         "cards.press-tilt": "cards.tilt",
         "cards.rim-light": "cards.tilt",
+        "cards.sticker-peel": "cards.tilt",
+        "cards.spotlight-border": "cards.tilt",
         // Flip & reveal
         "cards.flip": "cards.flip",
         "cards.scratch-reveal": "cards.flip",
         "cards.hinge-reveal": "cards.flip",
         "cards.tile-flip": "cards.flip",
         "cards.scrub-flip": "cards.flip",
+        "cards.book-open": "cards.flip",
+        "cards.number-reveal": "cards.flip",
         // Card swipe
         "cards.swipe-stack": "cards.swipe",
         "cards.shuffle": "cards.swipe",
@@ -65,17 +69,24 @@ enum CardsFamilies {
         "cards.toss-swipe": "cards.swipe",
         "cards.tear-off": "cards.swipe",
         "cards.rewind-swipe": "cards.swipe",
+        "cards.swap-places": "cards.swipe",
         // Stacks & decks
         "cards.wallet-stack": "cards.stack",
         "cards.fan-deck": "cards.stack",
         "cards.notification-stack": "cards.stack",
         "cards.stacking-scroll": "cards.stack",
         "cards.cascade-spread": "cards.stack",
+        "cards.rolodex": "cards.stack",
+        "cards.time-machine": "cards.stack",
+        "cards.deal-hand": "cards.stack",
+        "cards.glass-stack": "cards.stack",
         // Expand & peek
         "cards.peek": "cards.expand",
         "cards.accordion": "cards.expand",
         "cards.bento-expand": "cards.expand",
         "cards.detent-expand": "cards.expand",
         "cards.origami-unfold": "cards.expand",
+        "cards.widget-resize": "cards.expand",
+        "cards.plan-switch": "cards.expand",
     ]
 }
