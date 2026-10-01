@@ -31,6 +31,18 @@ enum ChartEffects {
         .chartsOdometerKPI,
         .chartsBulletKPI,
         .chartsWaffleKPI,
+        // Round 2
+        .chartsWaterfall,
+        .chartsLollipop,
+        .chartsRangeBrush,
+        .chartsStackedArea,
+        .chartsECGLive,
+        .chartsLineCompare,
+        .chartsRadialBars,
+        .chartsSunburst,
+        .chartsFunnelFlow,
+        .chartsTrendPill,
+        .chartsTreemap,
     ]
 }
 
