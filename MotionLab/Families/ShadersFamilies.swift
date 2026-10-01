@@ -89,5 +89,20 @@ enum ShadersFamilies {
         "shader.prism": "shaders.glass",
         "shader.liquid-chrome": "shaders.generative",
         "shader.nebula": "shaders.generative",
+        // Third batch
+        "shader.underwater": "shaders.distortion",
+        "shader.wind-smear": "shaders.distortion",
+        "shader.crumple": "shaders.distortion",
+        "shader.touch-trail": "shaders.distortion",
+        "shader.displace-fade": "shaders.transition",
+        "shader.glitch-cut": "shaders.transition",
+        "shader.curl-flip": "shaders.transition",
+        "shader.super8": "shaders.retro",
+        "shader.night-vision": "shaders.retro",
+        "shader.sketch-edges": "shaders.retro",
+        "shader.rain-glass": "shaders.glass",
+        "shader.glass-blocks": "shaders.glass",
+        "shader.fire": "shaders.generative",
+        "shader.lightning-arcs": "shaders.generative",
     ]
 }
