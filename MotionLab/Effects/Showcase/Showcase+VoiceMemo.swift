@@ -379,22 +379,27 @@ private struct VoiceWave: View {
 
     private func bars(levels: [CGFloat]) -> some View {
         let count = samples.count
-        let slotBar = max(2, slotPitch * 0.56)
+        let slotBar: CGFloat = max(2, slotPitch * 0.56)
         return ZStack(alignment: .leading) {
             ForEach(samples.indices, id: \.self) { index in
-                let slot = min(slots - 1, index * slots / max(count, 1))
-                let age = CGFloat(count - 1 - index)
-                let played = Double(slot) + 0.5 < playhead * Double(slots)
+                let slot: Int = min(slots - 1, index * slots / max(count, 1))
+                let age: CGFloat = CGFloat(count - 1 - index)
+                let played: Bool = Double(slot) + 0.5 < playhead * Double(slots)
+                let restTint: Color = played ? Signature.accent : Color(white: 0.4)
+                let tint: Color = recording ? Color(white: 0.94) : restTint
+                let level: CGFloat = slot < levels.count ? levels[slot] : 0.1
+                let liveHeight: CGFloat = max(4, samples[index] * height)
+                let restHeight: CGFloat = max(4, level * (height - 22))
+                let liveX: CGFloat = width - headInset - age * livePitch
+                let restX: CGFloat = pillLead + CGFloat(slot) * slotPitch + (slotPitch - slotBar) / 2
+                let squeezeDelay: Double = min(Double(age) * 0.004, 0.3)
                 Capsule()
-                    .fill(recording ? Color(white: 0.94) : (played ? Signature.accent : Color(white: 0.4)))
-                    .frame(
-                        width: recording ? 3.5 : slotBar,
-                        height: recording ? max(4, samples[index] * height) : max(4, (slot < levels.count ? levels[slot] : 0.1) * (height - 22))
-                    )
-                    .offset(x: recording ? width - headInset - age * livePitch : pillLead + CGFloat(slot) * slotPitch + (slotPitch - slotBar) / 2)
+                    .fill(tint)
+                    .frame(width: recording ? 3.5 : slotBar, height: recording ? liveHeight : restHeight)
+                    .offset(x: recording ? liveX : restX)
                     .transition(.scale(scale: 0.05).combined(with: .opacity))
                     // The squeeze: newest bars leave first.
-                    .animation(.spring(response: 0.6, dampingFraction: 0.78).delay(min(Double(age) * 0.004, 0.3)), value: recording)
+                    .animation(.spring(response: 0.6, dampingFraction: 0.78).delay(squeezeDelay), value: recording)
             }
         }
         .frame(width: width, height: height, alignment: .leading)
