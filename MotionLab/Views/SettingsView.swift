@@ -8,7 +8,18 @@ struct SettingsView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @AppStorage(AppLanguage.storageKey) private var storedLanguage: AppLanguage = AppLanguage.systemDefault
     @AppStorage("app.appearance") private var appearance: Int = 0
-    @AppStorage("app.animatePreviews") private var animatePreviews = true
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    @AppStorage(AnimatePreviews.key) private var animatePreviewsChoice: Bool?
+
+    /// The toggle shows the current behaviour (the width-class default until it is flipped) and stores an
+    /// explicit choice once flipped.
+    private var animatePreviews: Binding<Bool> {
+        Binding {
+            AnimatePreviews.isOn(choice: animatePreviewsChoice, sizeClass: sizeClass)
+        } set: {
+            animatePreviewsChoice = $0
+        }
+    }
 
     private var versionString: String {
         let info = Bundle.main.infoDictionary
@@ -82,20 +93,20 @@ struct SettingsView: View {
     }
 
     private var motionContent: some View {
-        let playing = animatePreviews && !reduceMotion
+        let playing = animatePreviews.wrappedValue && !reduceMotion
         return VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 12) {
                 MotionPreviewGlyph(active: playing)
                     .frame(width: 44, height: 44)
                     .accessibilityHidden(true)
                 // Reduce Motion always wins: show the toggle as off and explain why.
-                Toggle(isOn: reduceMotion ? .constant(false) : $animatePreviews) {
+                Toggle(isOn: reduceMotion ? .constant(false) : animatePreviews) {
                     Text(Strings.animatePreviews, language)
                         .font(.body)
                 }
                 .tint(Palette.ember)
                 .disabled(reduceMotion)
-                .sensoryFeedback(.impact(weight: .light), trigger: animatePreviews)
+                .sensoryFeedback(.impact(weight: .light), trigger: animatePreviews.wrappedValue)
             }
             Text(reduceMotion ? Strings.reduceMotionActive : Strings.animatePreviewsFooter, language)
                 .font(.footnote)

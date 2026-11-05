@@ -134,11 +134,26 @@ extension EnvironmentValues {
     }
 }
 
+/// "Animate previews" (Settings): whether list thumbnails play their demos or show a still frame.
+///
+/// Until someone flips the toggle, regular-width windows show stills and compact ones play: a regular
+/// grid puts 12–20 thumbnails on screen, more live demos than an older iPad keeps at frame rate, and on
+/// an iPhone Duo's unfolded inner screen scrolling stuttered with them playing. It follows the width
+/// class rather than the device, so a Duo animates when folded and goes still when opened.
+enum AnimatePreviews {
+    static let key = "app.animatePreviews"
+
+    static func isOn(choice: Bool?, sizeClass: UserInterfaceSizeClass?) -> Bool {
+        choice ?? (sizeClass != .regular)
+    }
+}
+
 struct RootView: View {
     @Environment(\.appLanguage) private var language
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(AppNavigator.self) private var navigator
-    @AppStorage("app.animatePreviews") private var animatePreviews = true
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    @AppStorage(AnimatePreviews.key) private var animatePreviewsChoice: Bool?
     /// The launch intro overlay is mounted.
     @State private var showsIntro = LaunchIntro.shouldPlay
     /// The intro still hides the UI (until its circular reveal starts).
@@ -183,7 +198,7 @@ struct RootView: View {
                 RoutedStack { SettingsView() }
             }
         }
-        .environment(\.previewMotionEnabled, animatePreviews && !reduceMotion)
+        .environment(\.previewMotionEnabled, AnimatePreviews.isOn(choice: animatePreviewsChoice, sizeClass: sizeClass) && !reduceMotion)
         // iOS 26: the floating tab bar tucks away while reading down a page.
         .modifier(TabBarMinimizeOnScroll())
         // A light detent tick on every tab switch (tap or programmatic, e.g. a tag search).

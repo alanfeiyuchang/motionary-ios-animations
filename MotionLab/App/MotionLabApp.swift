@@ -11,9 +11,8 @@ struct MotionLabApp: App {
     init() {
         // First launch: follow the device language (zh* → 中文, otherwise English) and remember it.
         AppLanguage.registerInitialChoice()
-        // iPad lists show still frames by default: a screenful of 12–20 live demos is more than an older iPad
-        // GPU keeps at frame rate. iPhone keeps live previews. The Settings toggle overrides either.
-        UserDefaults.standard.register(defaults: ["app.animatePreviews": UIDevice.current.userInterfaceIdiom != .pad])
+        // "Animate previews" has no registered default: until someone flips the toggle it follows the
+        // window's width class (`AnimatePreviews.isOn`), so it changes as an iPhone Duo folds and unfolds.
         if CatalogTools.shouldExport {
             CatalogTools.exportCatalog()
         }

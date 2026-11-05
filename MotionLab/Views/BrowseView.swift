@@ -17,7 +17,6 @@ struct BrowseView: View {
     @State private var isAppeared = false
     /// Scroll offset for the hero mesh, kept in its own observable so scrolling only re-renders the mesh.
     @State private var heroScroll = HeroScrollState()
-    @State private var focusedFeatured = 0
     /// Bumped on every appearance: the dice "re-rolls" with a bounce.
     @State private var diceRolls = 0
 
@@ -178,39 +177,12 @@ struct BrowseView: View {
 
     // MARK: Featured
 
+    /// Its own view, so the focused-card state that changes on every snap re-renders the row alone. When it
+    /// lived on BrowseView, each snap rebuilt the whole Browse page: swiping the row dropped to about 20 fps
+    /// on an unfolded iPhone Duo, which shows three or four cards at once (6% of frame time lost in an
+    /// automated sweep with the state here, 0% without it).
     private var featured: some View {
-        let items = EffectLibrary.featured
-        let count = items.count
-        let focused = focusedFeatured
-        let motion = !reduceMotion
-        return VStack(alignment: .leading, spacing: 12) {
-            SectionTitle(text: Strings.featured(language))
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(alignment: .top, spacing: FeaturedMetrics.spacing) {
-                    ForEach(Array(items.enumerated()), id: \.element.id) { index, effect in
-                        EffectLink(effect: effect, source: "featured", cornerRadius: CornerRadius.featuredCard) {
-                            FeaturedCard(effect: effect, isFocused: index == focused)
-                        }
-                        .modifier(CoverFlowEffect(enabled: motion))
-                        .environment(\.urgentSnapshots, index < 2)
-                    }
-                }
-                .scrollTargetLayout()
-                .padding(.horizontal, FeaturedMetrics.inset)
-            }
-            .scrollTargetBehavior(.viewAligned)
-            // Lets the focused card's shadow spill below the row.
-            .scrollClipDisabled()
-            .onScrollGeometryChange(for: Int.self) { geometry in
-                let maxOffset = geometry.contentSize.width - geometry.containerSize.width
-                return FeaturedMetrics.focusIndex(offset: geometry.contentOffset.x, maxOffset: maxOffset, count: count)
-            } action: { _, index in
-                focusedFeatured = index
-            }
-            // A soft detent as each card snaps into focus.
-            .sensoryFeedback(.selection, trigger: focusedFeatured)
-            .pausesSnapshotsWhileScrolling()
-        }
+        FeaturedRow()
     }
 
     // MARK: Families
@@ -397,6 +369,48 @@ private enum FamilyRowMetrics {
     static let cardWidth: CGFloat = 300
 }
 
+/// The Featured carousel (see `BrowseView.featured`).
+private struct FeaturedRow: View {
+    @Environment(\.appLanguage) private var language
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var focusedFeatured = 0
+
+    var body: some View {
+        let items = EffectLibrary.featured
+        let count = items.count
+        let focused = focusedFeatured
+        let motion = !reduceMotion
+        return VStack(alignment: .leading, spacing: 12) {
+            SectionTitle(text: Strings.featured(language))
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(alignment: .top, spacing: FeaturedMetrics.spacing) {
+                    ForEach(Array(items.enumerated()), id: \.element.id) { index, effect in
+                        EffectLink(effect: effect, source: "featured", cornerRadius: CornerRadius.featuredCard) {
+                            FeaturedCard(effect: effect, isFocused: index == focused)
+                        }
+                        .modifier(CoverFlowEffect(enabled: motion))
+                        .environment(\.urgentSnapshots, index < 2)
+                    }
+                }
+                .scrollTargetLayout()
+                .padding(.horizontal, FeaturedMetrics.inset)
+            }
+            .scrollTargetBehavior(.viewAligned)
+            // Lets the focused card's shadow spill below the row.
+            .scrollClipDisabled()
+            .onScrollGeometryChange(for: Int.self) { geometry in
+                let maxOffset = geometry.contentSize.width - geometry.containerSize.width
+                return FeaturedMetrics.focusIndex(offset: geometry.contentOffset.x, maxOffset: maxOffset, count: count)
+            } action: { _, index in
+                focusedFeatured = index
+            }
+            // A soft detent as each card snaps into focus.
+            .sensoryFeedback(.selection, trigger: focusedFeatured)
+            .pausesSnapshotsWhileScrolling()
+        }
+    }
+}
+
 private enum FeaturedMetrics {
     static let cardWidth: CGFloat = 260
     static let spacing: CGFloat = 16
@@ -544,7 +558,7 @@ private struct FeaturedCard: View {
         .frame(width: FeaturedMetrics.cardWidth, alignment: .leading)
         .background {
             // The snapped card lifts: its shadow deepens as it settles into focus.
-            GlossCardBackground(cornerRadius: CornerRadius.featuredCard, tint: effect.category.gradient.first, lifted: isFocused)
+            GlossCardBackground(cornerRadius: CornerRadius.featuredCard, tint: effect.category.gradient.first, lifted: isFocused, liftable: true)
                 .animation(.smooth(duration: 0.45), value: isFocused)
         }
         .contentShape(shape)
