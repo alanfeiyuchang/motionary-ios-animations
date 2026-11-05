@@ -366,7 +366,9 @@ private struct HeroBackdrop: View {
             .offset(y: -scrolled * 0.5)
             .opacity(visibility)
             .frame(maxWidth: .infinity, alignment: .top)
-            .ignoresSafeArea(edges: .top)
+            // Sideways too: on iPhone Duo the status bar is a strip down the trailing edge, and the
+            // glow has to run behind it rather than stop short and leave a black column there.
+            .ignoresSafeArea(edges: [.top, .horizontal])
             .allowsHitTesting(false)
             .accessibilityHidden(true)
     }

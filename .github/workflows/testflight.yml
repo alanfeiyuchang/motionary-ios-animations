@@ -18,7 +18,9 @@ on:
 jobs:
   testflight:
     if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[testflight]')
-    runs-on: macos-26
+    # Xcode 27.1 or newer is required for iPhone Duo: apps built with an older SDK are kept clear of the
+    # Duo's status-bar strip instead of running to the screen edge. The xcode-27 image carries 27.1.
+    runs-on: xcode-27
     timeout-minutes: 45
     env:
       TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
@@ -39,9 +41,21 @@ jobs:
 
       - name: Select Xcode
         run: |
-          PICK=$(ls -d /Applications/Xcode_26*.app | grep -v -i beta | sort -V | tail -n 1)
+          # Pinned to the release 27.1: on this image Xcode_27.2.app is an alias of a release candidate,
+          # and App Store uploads must come from a release Xcode.
+          PICK=/Applications/Xcode_27.1.app
+          if [ ! -d "$PICK" ]; then
+            echo "::error::$PICK is not on this runner image"; ls -d /Applications/Xcode*.app; exit 1
+          fi
           sudo xcode-select -s "$PICK"
           xcodebuild -version
+          SDK=$(xcrun --sdk iphoneos --show-sdk-version)
+          echo "iOS SDK $SDK"
+          if [ "$(printf '%s\n27.1\n' "$SDK" | sort -V | head -n 1)" != "27.1" ]; then
+            echo "::error::iOS SDK $SDK is older than 27.1 (needed for iPhone Duo)"; exit 1
+          fi
+          # Xcode 27 installs the Metal toolchain on demand; the app has Metal shaders.
+          xcrun -f metal >/dev/null 2>&1 || xcodebuild -downloadComponent MetalToolchain
 
       - name: Install API key
         run: |
